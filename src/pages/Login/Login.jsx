@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import { SupabaseClient } from "@supabase/supabase-js";
-import loadingImg from "/TI 2026/React/login-app/src/components/loading.png";
+import loadingImg from "/TI 2026/React/login-app/src/components/assets/loading.png";
 import { supabase } from "../../services/supabaseClient";
 
 

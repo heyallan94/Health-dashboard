@@ -13,6 +13,7 @@ import Confirmado from "./pages/confirmed/confirmado";
 import Exercicio from "./pages/Exercicio/Exercicio";
 
 
+
 function App() {
 
   useEffect(() => {
@@ -40,7 +41,7 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/Health-dashboard">
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -52,7 +53,7 @@ function App() {
         <Route path="/home/metas" element={<Metas />} />
         <Route path="/home/agua" element={<Agua />} />
         <Route path="/confirmado" element={<Confirmado />} />
-        <Route path="homeexercicio" element={<Exercicio />} />
+        <Route path="/home/exercicio" element={<Exercicio />} />
       </Routes>
     </BrowserRouter>
   );

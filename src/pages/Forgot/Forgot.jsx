@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Forgot.css";
-import loadingImg from "/TI 2026/React/login-app/src/components/loading.png";
+import loadingImg from "/TI 2026/React/login-app/src/components/assets/loading.png";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../services/supabaseClient";
 
