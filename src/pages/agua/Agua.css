@@ -1,0 +1,360 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Agua.css  —  Design System: Deep Navy + Neon Accents
+   Paleta base: #080e1a (fundo) · #0d1526 (cards) · #111e35 (elevado)
+   Acentos: #3b82f6 (azul água) · #22d3ee (ciano) · #4ade80 (meta atingida)
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ── Container ───────────────────────────────────────────────────────────── */
+.aguaContainer {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* ── Botão voltar ────────────────────────────────────────────────────────── */
+.aguaBtnVoltar {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: #94a3b8;
+  border: 1px solid #1a2640;
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, transform 0.2s;
+  -webkit-appearance: none;
+}
+
+.aguaBtnVoltar:hover {
+  color: #e2e8f0;
+  border-color: #3b82f6;
+  transform: translateX(-3px);
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.aguaHeader {
+  text-align: center;
+}
+
+.aguaTitulo {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #e2e8f0;
+  margin: 0 0 6px;
+}
+
+.aguaPeso {
+  font-size: 13px;
+  color: #475569;
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+
+/* ── Barra de progresso ──────────────────────────────────────────────────── */
+.aguaBarraWrapper {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  justify-content: center;
+}
+
+.aguaBarra {
+  position: relative;
+  width: 72px;
+  height: 220px;
+  background: #0d1526;
+  border: 1px solid #1a2640;
+  border-radius: 36px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+.aguaBarraProgresso {
+  width: 100%;
+  border-radius: 36px;
+  transition: height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  min-height: 0;
+}
+
+/* Linha tracejada de meta — posição fixa em 100% da barra */
+.aguaMetaMarca {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  border-top: 1.5px dashed rgba(250, 204, 21, 0.4);
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 6px;
+}
+
+.aguaMetaMarcaTexto {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(250, 204, 21, 0.5);
+  margin-top: 2px;
+}
+
+/* Info ao lado da barra */
+.aguaConsumoInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.aguaConsumoValor {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  transition: color 0.4s;
+}
+
+.aguaConsumoUnidade {
+  font-size: 14px;
+  color: #475569;
+  font-weight: 600;
+}
+
+.aguaConsumoDivisor {
+  font-size: 12px;
+  color: #1e2d47;
+  margin: 4px 0;
+}
+
+.aguaMetaValor {
+  font-size: 14px;
+  color: #334155;
+  font-weight: 600;
+}
+
+.aguaPctTexto {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #1e2d47;
+  margin-top: 6px;
+  text-transform: uppercase;
+}
+
+/* ── Status ──────────────────────────────────────────────────────────────── */
+.aguaStatus {
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  text-align: center;
+  letter-spacing: 0.02em;
+  padding: 10px 18px;
+  background: #0d1526;
+  border: 1px solid #1a2640;
+  border-radius: 30px;
+}
+
+.aguaStatus.atingiu {
+  color: #4ade80;
+  border-color: rgba(74, 222, 128, 0.25);
+  background: rgba(74, 222, 128, 0.06);
+}
+
+/* ── Grid de copos ───────────────────────────────────────────────────────── */
+.aguaCoposGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
+.aguaCopoWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Botão de adicionar */
+.aguaCopo {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: #0d1526;
+  border: 1px solid #1a2640;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+  -webkit-appearance: none;
+  padding: 8px 4px;
+}
+
+.aguaCopo:hover {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: #3b82f6;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(59, 130, 246, 0.2);
+}
+
+.aguaCopo:active {
+  transform: scale(0.95);
+}
+
+.aguaCopoEmoji {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.aguaCopoLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: #3b82f6;
+  letter-spacing: 0.04em;
+}
+
+/* Botão de remover (menor, discreto) */
+.aguaCopoMinus {
+  width: 100%;
+  padding: 5px;
+  background: transparent;
+  border: 1px solid #1a2640;
+  border-radius: 8px;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  -webkit-appearance: none;
+}
+
+.aguaCopoMinus:hover {
+  background: rgba(248, 113, 113, 0.08);
+  border-color: rgba(248, 113, 113, 0.25);
+  color: #f87171;
+}
+
+/* ── Botão zerar ─────────────────────────────────────────────────────────── */
+.aguaBtnZerar {
+  background: transparent;
+  border: 1px solid #1a2640;
+  border-radius: 12px;
+  padding: 10px 24px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  -webkit-appearance: none;
+}
+
+.aguaBtnZerar:hover {
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.3);
+  background: rgba(248, 113, 113, 0.06);
+}
+
+/* ── Disclaimer ──────────────────────────────────────────────────────────── */
+.aguaDisclaimer {
+  width: 100%;
+  background: #0d1526;
+  border: 1px solid #1a2640;
+  border-left: 3px solid #22d3ee;
+  border-radius: 14px;
+  padding: 16px 18px;
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.6;
+  animation: fadeSlideUp 0.4s ease;
+}
+
+.aguaDisclaimerTitulo {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #22d3ee;
+  margin-bottom: 8px;
+}
+
+.aguaDisclaimer strong {
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+/* ── Animação ────────────────────────────────────────────────────────────── */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────────────── */
+@media (max-width: 400px) {
+  .aguaCoposGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .aguaConsumoValor {
+    font-size: 28px;
+  }
+
+  .aguaBarra {
+    width: 60px;
+    height: 180px;
+  }
+}
+
+
+.btnVoltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: #94a3b8;
+  border: 1px solid #1e2d47;
+  border-radius: 12px;
+  padding: 10px 18px;
+  margin-bottom: 24px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, transform 0.2s;
+  letter-spacing: 0.01em;
+}
+
+.btnVoltar:hover {
+  color: #e2e8f0;
+  border-color: #3b82f6;
+  transform: translateX(-3px);
+}
+
+.btnVoltar:active {
+  transform: scale(0.97);
+}
+
+.btnVoltar{
+  width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+}

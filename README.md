@@ -1,70 +1,175 @@
-# Getting Started with Create React App
+# Health-dashboard
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Mobile-first fitness and nutrition tracking app built with React + Supabase.
 
-## Available Scripts
+The project focuses on:
 
-In the project directory, you can run:
+* calorie tracking
+* meal organization
+* hydration tracking
+* body progress
+* cardio estimation
+* gamification
+* simple UX for non-technical users
 
-### `npm start`
+Designed with a custom dark UI inspired by Apple Fitness.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+# Stack
 
-### `npm test`
+Frontend:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+* React
+* React Router
+* CSS Modules / Pure CSS
 
-### `npm run build`
+Backend:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+* Supabase
+* PostgreSQL
+* Supabase Auth
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Deployment:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+* GitHub Pages
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+# Features
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Nutrition Tracking
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+* Daily calorie tracking
+* Protein and carbohydrate tracking
+* Dynamic meal creation
+* Editable meal titles
+* Real-time totals
+* Persistent meal history
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Calendar System
 
-## Learn More
+* Historical nutrition visualization
+* Expandable daily cards
+* Mobile-first layout
+* Dynamic meal rendering from Supabase data
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Hydration
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+* Water intake tracking
+* Daily persistence
 
-### Code Splitting
+## Cardio / Exercise System (WIP)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+* Estimated calorie burn
+* MET/TDEE-based calculations
+* Exercise history
+* Manual calorie adjustment
+* Future integration with Home progress system
 
-### Analyzing the Bundle Size
+## Gamification
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+* Activity streaks
+* Consistency-based badges
+* Non-exploitable progression system
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+# Project Structure
 
-### Advanced Configuration
+src/
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+* components/ → reusable UI components
+* pages/ → app pages/features
+* services/ → Supabase and external services
+* sandbox/ → isolated experimental code (ignored in production)
+* assets/ → static assets
 
-### Deployment
+Example:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+src/pages/
 
-### `npm run build` fails to minify
+* home/
+* calendario/
+* kcaldiaria/
+* agua/
+* metas/
+* distintivos/
+* login/
+* register/
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+
+# Environment Variables
+
+Create a `.env` file:
+
+```env
+REACT_APP_SUPABASE_URL=your_url
+REACT_APP_SUPABASE_ANON_KEY=your_key
+```
+
+Never commit `.env`.
+
+---
+
+# Running Locally
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start development server:
+
+```bash
+npm start
+```
+
+Build production version:
+
+```bash
+npm run build
+```
+
+---
+
+# Deployment
+
+Production deployment is handled with GitHub Pages.
+
+Main branch:
+
+* stable production-ready code
+
+Dev branch:
+
+* active development and testing
+
+---
+
+# Goals
+
+This project was created to:
+
+* study real-world frontend architecture
+* build a production-style React application
+* practice Supabase integration
+* improve mobile-first UI/UX design
+* simulate a real SaaS MVP workflow
+
+---
+
+# Current Status
+
+Active development.
+
+Upcoming features:
+
+* smarter cardio calculations
+* better dashboard analytics
+* progress insights
+* improved gamification
+* offline support
+* PWA support

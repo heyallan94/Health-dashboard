@@ -1,0 +1,132 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   SmartBanner — adicione ao final do Home.css
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ── Container do banner ─────────────────────────────────────────────────── */
+.smartBanner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  width: 82%;
+  margin: 18px auto 0;
+  padding: 14px 18px;
+
+  background:    var(--sb-bg);
+  border:        1px solid var(--sb-border);
+  border-radius: 16px;
+  box-shadow:    0 0 20px var(--sb-glow);
+
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+
+  /* animação de entrada */
+  opacity: 1;
+}
+
+.smartBanner:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px var(--sb-glow), 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.smartBanner:active {
+  transform: scale(0.985);
+}
+
+/* ── Animações slide ─────────────────────────────────────────────────────── */
+.smartBanner.sb-entrar {
+  animation: sbEntrar 0.28s ease forwards;
+}
+
+.smartBanner.sb-sair {
+  animation: sbSair 0.2s ease forwards;
+}
+
+@keyframes sbEntrar {
+  from { opacity: 0; transform: translateX(12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes sbSair {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(-10px); }
+}
+
+/* ── Emoji ───────────────────────────────────────────────────────────────── */
+.sbEmoji {
+  font-size: 20px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+/* ── Texto principal ─────────────────────────────────────────────────────── */
+.sbTexto {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--sb-text);
+  letter-spacing: 0.01em;
+}
+
+/* ── Direita: contador + seta ────────────────────────────────────────────── */
+.sbDir {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.sbContador {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--sb-text);
+  opacity: 0.6;
+  letter-spacing: 0.05em;
+}
+
+.sbSeta {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--sb-text);
+  opacity: 0.7;
+  line-height: 1;
+  transition: opacity 0.2s;
+}
+
+.smartBanner:hover .sbSeta {
+  opacity: 1;
+}
+
+/* ── Cores específicas (neon glow nas bordas) ────────────────────────────── */
+.sb-vermelho { border-color: rgba(239, 68,  68,  0.4); }
+.sb-azul     { border-color: rgba(59,  130, 246, 0.4); }
+.sb-verde    { border-color: rgba(74,  222, 128, 0.4); }
+.sb-dourado  { border-color: rgba(250, 204, 21,  0.4); }
+
+/* ── Mobile ──────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .smartBanner {
+    width: 92%;
+    padding: 13px 15px;
+    gap: 10px;
+  }
+
+  .sbTexto {
+    font-size: 12.5px;
+  }
+
+  .sbEmoji {
+    font-size: 18px;
+  }
+}
+
+/* ── Desktop: banner dentro do dashboard ────────────────────────────────── */
+@media (min-width: 768px) {
+  .smartBanner {
+    width: 75%;
+    max-width: 700px;
+  }
+}

@@ -1,0 +1,742 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Home.css  —  Design System: Deep Navy + Neon Accents
+   Paleta base: #080e1a (fundo) · #0d1526 (cards) · #111e35 (elevado)
+   Acentos: #3b82f6 (azul vivo) · #facc15 (kcal/amarelo) · #4ade80 (verde)
+            #22d3ee (ciano)
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ── Reset base ─────────────────────────────────────────────────────────── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #080e1a;
+  color: #e2e8f0;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Container principal ─────────────────────────────────────────────────── */
+.homeContainer {
+  min-height: 100vh;
+  padding: 20px;
+  background: #080e1a;
+  color: #e2e8f0;
+}
+
+/* ── Loading screen ──────────────────────────────────────────────────────── */
+.loadingScreen {
+  position: fixed;
+  inset: 0;
+  background: #080e1a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.welcome {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #e2e8f0;
+  margin-bottom: 10px;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.welcome.show { opacity: 1; }
+.welcome.hide  { opacity: 0; }
+
+.dateTime {
+  font-size: 14px;
+  color: #475569;
+  letter-spacing: 0.04em;
+  opacity: 0;
+  transition: opacity 0.6s ease 0.15s;
+}
+
+.dateTime p { margin: 4px 0; }
+.dateTime.show { opacity: 1; }
+.dateTime.hide  { opacity: 0; }
+
+/* ── Dashboard ───────────────────────────────────────────────────────────── */
+.dashboard {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* ── Header desktop ──────────────────────────────────────────────────────── */
+.desktopHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.desktopNome {
+  font-size: 20px;
+  font-weight: 700;
+  color: #e2e8f0;
+  letter-spacing: -0.01em;
+}
+
+/* ── Botão logout ────────────────────────────────────────────────────────── */
+.btnLogout {
+  background: transparent;
+  border: 1px solid #1a2640;
+  color: #64748b;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btnLogout:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #f87171;
+  transform: translateY(-1px);
+}
+
+.btnLogout:active {
+  transform: scale(0.97);
+}
+
+/* ── Linha separadora ────────────────────────────────────────────────────── */
+.linha {
+  border: none;
+  border-top: 1px solid #1a2640;
+  margin: 16px 0;
+}
+
+/* ── Grid de cards ───────────────────────────────────────────────────────── */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 20px 0;
+}
+
+/* ── Card base ───────────────────────────────────────────────────────────── */
+.card {
+  position: relative;
+  min-height: 130px;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid #1a2640;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 14px;
+  text-align: center;
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(8, 14, 26, 0.75) 0%,
+    rgba(8, 14, 26, 0.15) 60%,
+    transparent 100%
+  );
+  z-index: 1;
+  border-radius: inherit;
+  transition: background 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.5);
+  border-color: #3b82f6;
+}
+
+.card:hover::before {
+  background: linear-gradient(
+    to top,
+    rgba(8, 14, 26, 0.6) 0%,
+    rgba(8, 14, 26, 0.1) 60%,
+    transparent 100%
+  );
+}
+
+.card:active {
+  transform: scale(0.98);
+}
+
+/* Card ativo (selecionado no desktop) */
+.card.cardAtivo {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35), 0 10px 32px rgba(0, 0, 0, 0.5);
+}
+
+.card.cardAtivo::before {
+  background: linear-gradient(
+    to top,
+    rgba(59, 130, 246, 0.25) 0%,
+    rgba(8, 14, 26, 0.1) 60%,
+    transparent 100%
+  );
+}
+
+.card span {
+  position: relative;
+  z-index: 2;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #e2e8f0;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+}
+
+.card::after {
+  display: none;
+}
+
+/* ── Imagens de fundo dos cards ──────────────────────────────────────────── */
+.card.kcal {
+  background-image: url("/public/icons/KcalDiaria.jpeg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.card.calendario {
+  background-image: url("/public/icons/Calendario.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.card.plano {
+  background-image: url("/public/icons/plano.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.card.metas {
+  background-image: url("/public/icons/metas.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.card.agua {
+  background-image: url("/public/icons/agua.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* ── Card bloqueado ──────────────────────────────────────────────────────── */
+.card.bloqueado {
+  filter: grayscale(100%) brightness(0.35);
+  cursor: not-allowed;
+  pointer-events: auto;
+}
+
+.card.bloqueado::before {
+  content: '🔒';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  z-index: 3;
+  border-radius: inherit;
+}
+
+.card.bloqueado:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: #1a2640;
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+   LINHA PRINCIPAL DESKTOP: círculos (esq) + componente (dir)
+──────────────────────────────────────────────────────────────────────────── */
+.mainRow {
+  display: flex;
+  flex-direction: column;   /* mobile: empilha */
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* ── Coluna esquerda: círculos ───────────────────────────────────────────── */
+.colCirculos {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.bloqueadoCirculos {
+  opacity: 0.35;
+  pointer-events: none;
+  filter: grayscale(1);
+}
+
+.overlayBloqueado {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  z-index: 20;
+  backdrop-filter: blur(3px);
+  border-radius: 20px;
+}
+
+.boxCirculos {
+  background: #0d1526;
+  border: 1px solid #1a2640;
+  border-radius: 20px;
+  padding: 24px 20px;
+  animation: fadeSlideUp 0.4s ease;
+}
+
+.tituloCirculos {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #475569;
+  margin-bottom: 20px;
+}
+
+/* 3 círculos lado a lado — gap reduzido para caber bem */
+.circulosWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.circleLabel {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #475569;
+}
+
+/* ── Coluna direita: componente ou placeholder ───────────────────────────── */
+.colConteudo {
+  flex: 1;
+  min-height: 200px;
+  animation: fadeSlideUp 0.3s ease;
+}
+
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 200px;
+  background: #0d1526;
+  border: 1px dashed #1a2640;
+  border-radius: 20px;
+  gap: 12px;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+.placeholderIcon {
+  font-size: 32px;
+  opacity: 0.6;
+}
+
+.componenteWrapper {
+  background: #0d1526;
+  border: 1px solid #1a2640;
+  border-radius: 20px;
+  overflow: hidden;
+  animation: fadeSlideUp 0.3s ease;
+}
+
+/* ── Gráfico full-width ──────────────────────────────────────────────────── */
+.graficoFullWidth {
+  width: 90%;
+  margin: 28px auto 0;
+  background: #0d1526;
+  border: 1px solid #1a2640;
+  border-radius: 20px;
+  padding: 24px;
+  animation: fadeSlideUp 0.4s ease;
+}
+
+/* ── Rodapé desktop ──────────────────────────────────────────────────────── */
+.rodapeDesktop {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding-top: 12px;
+  color: #1e2d47;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+/* ── Dialog (mobile) ─────────────────────────────────────────────────────── */
+.dialog {
+  border: 1px solid #1a2640;
+  border-radius: 18px;
+  padding: 24px;
+  width: 320px;
+  background: #0d1526;
+  color: #e2e8f0;
+  text-align: center;
+}
+
+.dialog::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.dialog input,
+.dialog select {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #1a2640;
+  background: #111e35;
+  color: #e2e8f0;
+  font-size: 16px;
+  outline: none;
+}
+
+.dialog button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #3b82f6;
+  color: white;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.dialog button:last-child {
+  background: #111e35;
+  color: #64748b;
+  border: 1px solid #1a2640;
+  margin-left: 8px;
+}
+
+/* ── Resultado ───────────────────────────────────────────────────────────── */
+.resultado {
+  margin-top: 14px;
+  font-size: 14px;
+  color: #4ade80;
+  text-align: left;
+}
+
+.resultado p { margin: 6px 0; }
+
+.resultadoBox {
+  background: #0d1526;
+  border: 1px solid #1a2640;
+  padding: 20px;
+  border-radius: 14px;
+  color: #4ade80;
+  font-size: 14px;
+}
+
+/* ── Wrappers legados (mantidos por compatibilidade) ─────────────────────── */
+.conteudoWrapper {
+  display: flex;
+  gap: 20px;
+  margin-top: 30px;
+  align-items: flex-start;
+}
+
+.areaConteudo { flex: 1; }
+.areaResultado { width: 300px; }
+
+.conteudoAba {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 400px;
+}
+
+.conteudoAba h3 {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #e2e8f0;
+}
+
+.conteudoAba input,
+.conteudoAba select {
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1px solid #1a2640;
+  background: #0d1526;
+  color: #e2e8f0;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.conteudoAba input:focus,
+.conteudoAba select:focus {
+  border-color: #3b82f6;
+}
+
+.btnCalcular {
+  padding: 11px 20px;
+  border: none;
+  border-radius: 10px;
+  background: #3b82f6;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  align-self: flex-start;
+  min-width: 120px;
+}
+
+.btnCalcular:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.emBreve {
+  color: #1e2d47;
+  font-size: 14px;
+  margin-top: 20px;
+}
+
+/* ── Animação fadeSlideUp ────────────────────────────────────────────────── */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   DESKTOP (768px+)
+───────────────────────────────────────────────────────────────────────────── */
+@media (min-width: 768px) {
+  .homeContainer {
+    padding: 40px 60px;
+  }
+
+  .dashboard {
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .userName { display: none; }
+  .linha { display: block; }
+
+  /* Cards em linha horizontal */
+  .cards {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    margin: 20px 0;
+  }
+
+  .card {
+    flex: 1;
+    height: 90px;
+    min-height: 90px;
+    border-radius: 14px;
+    justify-content: flex-end;
+    padding: 12px;
+  }
+
+  .card span {
+    font-size: 13px;
+  }
+
+  /* mainRow vira side-by-side */
+  .mainRow {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 24px;
+    margin-top: 24px;
+  }
+
+  /* Círculos: largura fixa, não encolhe */
+  .colCirculos {
+    width: 280px;
+    flex-shrink: 0;
+  }
+
+  /* Componente: ocupa o resto */
+  .colConteudo {
+    flex: 1;
+    min-height: 300px;
+  }
+
+  .placeholder {
+    min-height: 300px;
+  }
+
+  .desktopOnly { display: block; }
+  .conteudoWrapper { flex-direction: row; }
+  .areaResultado { width: 300px; }
+}
+
+@media (min-width: 1200px) {
+  .homeContainer {
+    padding: 40px 100px;
+  }
+
+  .colCirculos {
+    width: 320px;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MOBILE (max 767px)
+───────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  /* mainRow aparece mas empilha verticalmente */
+  .mainRow {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  /* Esconde so o componente/placeholder — circulos ficam visiveis */
+  .colConteudo {
+    display: none;
+  }
+
+  /* Circulos ocupam toda a largura no mobile */
+  .colCirculos {
+    width: 100%;
+  }
+
+  .boxCirculos {
+    padding: 20px 16px;
+  }
+
+  .circulosWrapper {
+    gap: 10px;
+  }
+
+  .graficoFullWidth {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .conteudoWrapper {
+    flex-direction: column;
+  }
+
+  .areaResultado {
+    width: 100%;
+  }
+
+  .desktopOnly { display: none; }
+  .rodapeDesktop { display: none; }
+
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .card {
+    min-height: 130px;
+  }
+}
+
+
+.carboTreinoBox {
+  margin-top: 22px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #111e35;
+  border: 1px solid #1a2640;
+}
+
+.carboTreinoTitulo {
+  font-size: 13px;
+  font-weight: 800;
+  color: #e2e8f0;
+  margin-bottom: 6px;
+}
+
+.carboTreinoTexto {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #94a3b8;
+}
+
+.carboTreinoBox.baixo {
+  border-color: rgba(239, 68, 68, 0.45);
+}
+
+.carboTreinoBox.baixo .carboTreinoTitulo {
+  color: #f87171;
+}
+
+.carboTreinoBox.medio {
+  border-color: rgba(250, 204, 21, 0.45);
+}
+
+.carboTreinoBox.medio .carboTreinoTitulo {
+  color: #facc15;
+}
+
+.carboTreinoBox.bom {
+  border-color: rgba(74, 222, 128, 0.45);
+}
+
+.carboTreinoBox.bom .carboTreinoTitulo {
+  color: #4ade80;
+}
+
+.carboTreinoBox.alto {
+  border-color: rgba(239, 68, 68, 0.45);
+}
+
+.carboTreinoBox.alto .carboTreinoTitulo {
+  color: #fb7185;
+}
+
+.card.exercicio {
+      background-image: url("/public/icons/exercicio.jpg");
+      background-size: cover;
+      background-position: center;
+}

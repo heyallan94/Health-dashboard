@@ -1,0 +1,575 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Exercicio.css  —  Design System: Deep Navy + Neon Accents
+   Paleta: #080e1a · #0d1526 · #111e35 · #1a2640
+   Acentos: #3b82f6 · #facc15 · #4ade80 · #22d3ee · #f87171
+   Fonte display: 'SF Pro Display' fallback via system-ui
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ── Página ──────────────────────────────────────────────────────────────── */
+.exercicioPage {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 20px 16px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  color: #e2e8f0;
+  font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ── Botão voltar ────────────────────────────────────────────────────────── */
+.exBtnBack {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: #64748b;
+  border: 1px solid #1a2640;
+  border-radius: 12px;
+  padding: 9px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  width: fit-content;
+  transition: color 0.2s, border-color 0.2s, transform 0.15s;
+}
+
+.exBtnBack:hover {
+  color: #e2e8f0;
+  border-color: #3b82f6;
+  transform: translateX(-2px);
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.exHeader {
+  margin-bottom: 4px;
+}
+
+.exTitle {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #e2e8f0;
+  line-height: 1.1;
+}
+
+.exNoPerfil {
+  font-size: 13px;
+  color: #facc15;
+  margin-top: 6px;
+  padding: 8px 12px;
+  background: rgba(250, 204, 21, 0.07);
+  border: 1px solid rgba(250, 204, 21, 0.2);
+  border-radius: 10px;
+}
+
+/* ── Badges de consistência ──────────────────────────────────────────────── */
+.exBadgeRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.exBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 5px 10px;
+  border-radius: 20px;
+}
+
+.exBadge--green {
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.25);
+  color: #4ade80;
+}
+
+.exBadge--blue {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  color: #60a5fa;
+}
+
+.exBadge--amber {
+  background: rgba(250, 204, 21, 0.1);
+  border: 1px solid rgba(250, 204, 21, 0.25);
+  color: #facc15;
+}
+
+/* ── Card base ───────────────────────────────────────────────────────────── */
+.exCard {
+  background: #0d1526;
+  border: 1px solid #1a2640;
+  border-radius: 20px;
+  padding: 20px;
+  animation: exFadeUp 0.3s ease both;
+}
+
+.exCardLabel {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #475569;
+  margin-bottom: 16px;
+}
+
+/* ── Carrossel ───────────────────────────────────────────────────────────── */
+.exCarrosselWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.exCarrossel {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 6px;
+  scrollbar-width: none;
+  flex: 1;
+}
+
+.exCarrossel::-webkit-scrollbar {
+  display: none;
+}
+
+.exExercicioItem {
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 78px;
+  padding: 12px 8px;
+  background: #111e35;
+  border: 1px solid #1a2640;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+
+.exExercicioItem:hover {
+  border-color: #3b82f6;
+  background: #152035;
+  transform: translateY(-2px);
+}
+
+.exExercicioItem:active {
+  transform: scale(0.96);
+}
+
+.exExercicioItem--ativo {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.12);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2), 0 4px 16px rgba(59, 130, 246, 0.1);
+}
+
+.exExercicioEmoji {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.exExercicioLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-align: center;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.exExercicioItem--ativo .exExercicioLabel {
+  color: #93c5fd;
+}
+
+/* Setas desktop */
+.exArrow {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  background: #111e35;
+  border: 1px solid #1a2640;
+  border-radius: 50%;
+  color: #64748b;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  user-select: none;
+}
+
+.exArrow:hover {
+  background: #1a2a45;
+  color: #e2e8f0;
+  border-color: #3b82f6;
+}
+
+/* ── Input de atividade ──────────────────────────────────────────────────── */
+.exInputWrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.exInput {
+  flex: 1;
+  padding: 14px 16px;
+  background: #111e35;
+  border: 1px solid #1a2640;
+  border-radius: 14px;
+  color: #e2e8f0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+}
+
+.exInput::placeholder {
+  color: #334155;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.exInput:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+/* Remove setas do input number */
+.exInput::-webkit-outer-spin-button,
+.exInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.exInputUnit {
+  font-size: 15px;
+  font-weight: 600;
+  color: #475569;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.exHint {
+  font-size: 12px;
+  color: #334155;
+  letter-spacing: 0.01em;
+  line-height: 1.5;
+}
+
+/* ── Card de resultado ───────────────────────────────────────────────────── */
+.exCard--resultado {
+  border-color: #1e3052;
+}
+
+.exCard--bom {
+  border-color: rgba(74, 222, 128, 0.25);
+  background: linear-gradient(135deg, #0d1526 0%, #0b1a12 100%);
+}
+
+.exCard--alto {
+  border-color: rgba(250, 204, 21, 0.25);
+  background: linear-gradient(135deg, #0d1526 0%, #1a1505 100%);
+}
+
+.exCard--ok {
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+/* Display de kcal */
+.exKcalDisplay {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.exKcalValor {
+  font-size: 52px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: #4ade80;
+  line-height: 1;
+}
+
+.exCard--alto .exKcalValor {
+  color: #facc15;
+}
+
+.exKcalUnidade {
+  font-size: 20px;
+  font-weight: 600;
+  color: #475569;
+  padding-bottom: 4px;
+}
+
+/* Input de edição */
+.exKcalInput {
+  font-size: 52px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: #facc15;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid #facc15;
+  outline: none;
+  width: 160px;
+  -webkit-appearance: none;
+}
+
+.exKcalInput::-webkit-outer-spin-button,
+.exKcalInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.exDuracao {
+  font-size: 13px;
+  color: #475569;
+  margin-bottom: 12px;
+  letter-spacing: 0.02em;
+}
+
+.exMensagem {
+  font-size: 15px;
+  font-weight: 500;
+  color: #e2e8f0;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.exDisclaimer {
+  font-size: 11px;
+  color: #334155;
+  line-height: 1.5;
+  margin-bottom: 16px;
+  letter-spacing: 0.01em;
+}
+
+/* ── Botões do resultado ─────────────────────────────────────────────────── */
+.exBotoesResultado {
+  display: flex;
+  gap: 10px;
+}
+
+.exBtnPrimary {
+  flex: 1;
+  padding: 13px;
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  border: none;
+  border-radius: 13px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.exBtnPrimary:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.exBtnPrimary:active {
+  transform: scale(0.98);
+}
+
+.exBtnPrimary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.exBtnSecondary {
+  padding: 13px 18px;
+  background: transparent;
+  border: 1px solid #1a2640;
+  border-radius: 13px;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.exBtnSecondary:hover {
+  border-color: #3b82f6;
+  color: #e2e8f0;
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.exSalvoOk {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4ade80;
+  padding: 10px 0;
+  letter-spacing: 0.02em;
+}
+
+/* ── Frase educativa ─────────────────────────────────────────────────────── */
+.exFrase {
+  padding: 14px 16px;
+  background: #0d1526;
+  border: 1px dashed #1a2640;
+  border-radius: 14px;
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+}
+
+/* ── Histórico ───────────────────────────────────────────────────────────── */
+.exHistoricoSection {
+  margin-top: 8px;
+}
+
+.exHistoricoTitulo {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #334155;
+  margin-bottom: 12px;
+}
+
+.exHistoricoVazio {
+  font-size: 14px;
+  color: #334155;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.exHistoricoGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.exHistoricoCard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #0d1526;
+  border: 1px solid #1a2640;
+  border-radius: 16px;
+  padding: 14px 16px;
+  transition: border-color 0.2s, transform 0.15s;
+  animation: exFadeUp 0.25s ease both;
+}
+
+.exHistoricoCard:hover {
+  border-color: #1e3052;
+  transform: translateY(-1px);
+}
+
+.exHistoricoEmoji {
+  font-size: 24px;
+  flex-shrink: 0;
+  width: 36px;
+  text-align: center;
+}
+
+.exHistoricoInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.exHistoricoNome {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-bottom: 2px;
+}
+
+.exHistoricoData {
+  font-size: 12px;
+  color: #475569;
+  letter-spacing: 0.02em;
+}
+
+.exHistoricoKcal {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.exHistoricoKcalValor {
+  font-size: 18px;
+  font-weight: 800;
+  color: #4ade80;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.exHistoricoKcalUnit {
+  font-size: 10px;
+  font-weight: 600;
+  color: #475569;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+
+.exHistoricoEditadoBadge {
+  font-size: 9px;
+  font-weight: 600;
+  color: #facc15;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 3px;
+  padding: 2px 5px;
+  background: rgba(250, 204, 21, 0.1);
+  border: 1px solid rgba(250, 204, 21, 0.2);
+  border-radius: 4px;
+}
+
+/* ── Animação ────────────────────────────────────────────────────────────── */
+@keyframes exFadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   DESKTOP (768px+)
+───────────────────────────────────────────────────────────────────────────── */
+@media (min-width: 768px) {
+  .exercicioPage {
+    padding: 28px 24px 60px;
+    max-width: 600px;
+  }
+
+  .exTitle {
+    font-size: 32px;
+  }
+
+  .exHistoricoGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .exCard {
+    padding: 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .exercicioPage {
+    max-width: 680px;
+  }
+}

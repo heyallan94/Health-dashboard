@@ -1,0 +1,575 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   meuplano.css  —  Design System: Deep Navy + Neon Accents
+   Paleta base: #080e1a (fundo) · #0d1526 (cards) · #111e35 (elevado)
+   Acentos: #3b82f6 (azul) · #facc15 (kcal) · #4ade80 (proteína) · #f87171 (alerta)
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ── Container principal ─────────────────────────────────────────────────── */
+.planoContainer {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+/* ── Indicador de etapas (três dots) ─────────────────────────────────────── */
+.planoEtapas {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.planoEtapaDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #1a2640;
+  transition: background 0.3s, transform 0.3s;
+}
+
+.planoEtapaDot.ativa {
+  background: #3b82f6;
+  transform: scale(1.2);
+}
+
+/* ── Caixa de cada etapa ─────────────────────────────────────────────────── */
+.planoEtapaBox {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: fadeSlideUp 0.3s ease;
+}
+
+/* ── Títulos ─────────────────────────────────────────────────────────────── */
+.planoTitulo {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #e2e8f0;
+  text-align: center;
+  margin: 0;
+}
+
+.planoSubtitulo {
+  font-size: 14px;
+  color: #475569;
+  text-align: center;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── Formulário de dados físicos ─────────────────────────────────────────── */
+.planoForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.planoInputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.planoInputGroup label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #475569;
+  padding-left: 4px;
+}
+
+/* Input com unidade embutida à direita */
+.planoInputComUnidade {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.planoInputComUnidade input {
+  width: 100%;
+  padding: 13px 52px 13px 16px;
+  background: #0d1526;
+  border: 1px solid #1a2640;
+  border-radius: 12px;
+  color: #e2e8f0;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+}
+
+.planoInputComUnidade input::placeholder {
+  color: #1e2d47;
+}
+
+.planoInputComUnidade input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.planoUnidade {
+  position: absolute;
+  right: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  pointer-events: none;
+}
+
+/* ── Botões de sexo (toggle) ─────────────────────────────────────────────── */
+.planoSexoOpcoes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.planoSexoBtn {
+  padding: 13px;
+  background: #0d1526;
+  border: 1px solid #1a2640;
+  border-radius: 12px;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
+  -webkit-appearance: none;
+}
+
+.planoSexoBtn:hover {
+  border-color: #3b82f6;
+  color: #94a3b8;
+}
+
+.planoSexoBtn.ativo {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: #3b82f6;
+  color: #60a5fa;
+}
+
+.planoSexoBtn:active {
+  transform: scale(0.97);
+}
+
+/* ── Cards de objetivo ───────────────────────────────────────────────────── */
+.planoObjetivos {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.planoObjetivoCard {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  background: #0d1526;
+  border: 1px solid #1a2640;
+  border-radius: 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s, box-shadow 0.2s;
+  -webkit-appearance: none;
+}
+
+.planoObjetivoCard:hover {
+  border-color: var(--cor-obj, #3b82f6);
+  background: #111e35;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.planoObjetivoCard:active {
+  transform: scale(0.98);
+}
+
+.planoObjetivoEmoji {
+  font-size: 28px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.planoObjetivoTexto {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.planoObjetivoTexto strong {
+  font-size: 15px;
+  font-weight: 700;
+  color: #e2e8f0;
+  letter-spacing: 0.01em;
+}
+
+.planoObjetivoTexto span {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.planoObjetivoDesc {
+  font-size: 12px;
+  color: #334155;
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+/* ── Grid de resultado (etapa 3) ─────────────────────────────────────────── */
+.planoResultadoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
+.planoResultadoItem {
+  background: #0d1526;
+  border: 1px solid #1a2640;
+  border-radius: 14px;
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.planoResultadoLabel {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #334155;
+}
+
+.planoResultadoValor {
+  font-size: 20px;
+  font-weight: 700;
+  color: #e2e8f0;
+  letter-spacing: -0.02em;
+}
+
+.planoResultadoSub {
+  font-size: 10px;
+  color: #475569;
+}
+
+/* ── Caixas de meta (kcal + proteína) ───────────────────────────────────── */
+.planoMetas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+}
+
+.planoMetaBox {
+  border-radius: 18px;
+  padding: 20px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.planoMetaBox.kcal {
+  background: rgba(250, 204, 21, 0.07);
+  border: 1px solid rgba(250, 204, 21, 0.2);
+}
+
+.planoMetaBox.proteina {
+  background: rgba(74, 222, 128, 0.07);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+}
+
+.planoMetaValor {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.planoMetaBox.kcal    .planoMetaValor { color: #facc15; }
+.planoMetaBox.proteina .planoMetaValor { color: #4ade80; }
+
+.planoMetaLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  letter-spacing: 0.02em;
+}
+
+.planoMetaDetalhe {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #1e2d47;
+  margin-top: 2px;
+}
+
+/* ── Aviso/disclaimer ────────────────────────────────────────────────────── */
+.planoAviso {
+  font-size: 11px;
+  color: #334155;
+  text-align: center;
+  line-height: 1.5;
+  padding: 0 8px;
+}
+
+/* ── Card do plano registrado ────────────────────────────────────────────── */
+.planoCard.registrado {
+  width: 100%;
+  background: #0d1526;
+  border: 1px solid #1a2640;
+  border-radius: 22px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  animation: fadeSlideUp 0.35s ease;
+}
+
+.planoCardTopo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #1a2640;
+  border-left: 3px solid;
+  padding-left: 12px;
+  border-radius: 2px;
+}
+
+.planoEmoji {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.planoCardTitulo {
+  font-size: 17px;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin: 0;
+}
+
+.planoCardSub {
+  font-size: 12px;
+  color: #475569;
+  margin: 2px 0 0;
+}
+
+.planoCardData {
+  font-size: 11px;
+  color: #1e2d47;
+  letter-spacing: 0.04em;
+  text-align: right;
+  margin-top: -10px;
+}
+
+/* Grid de métricas no card registrado */
+.planoMetricas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.planoMetricaItem {
+  background: #111e35;
+  border: 1px solid #1a2640;
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.planoMetricaLabel {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #334155;
+}
+
+.planoMetricaValor {
+  font-size: 16px;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.planoMetricaValor small {
+  font-size: 11px;
+  color: #475569;
+  font-weight: 400;
+}
+
+/* ── Botões ──────────────────────────────────────────────────────────────── */
+.planoBtnPrimario {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 60%, #3b82f6 100%);
+  border: none;
+  border-radius: 14px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  -webkit-appearance: none;
+}
+
+.planoBtnPrimario:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 28px rgba(59, 130, 246, 0.4);
+}
+
+.planoBtnPrimario:active {
+  transform: scale(0.98);
+  box-shadow: none;
+}
+
+.planoBtnSecundario {
+  width: 100%;
+  padding: 13px;
+  background: transparent;
+  border: 1px solid #1a2640;
+  border-radius: 14px;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, transform 0.15s;
+  -webkit-appearance: none;
+}
+
+.planoBtnSecundario:hover {
+  border-color: #334155;
+  color: #94a3b8;
+  transform: translateY(-1px);
+}
+
+.planoBtnSecundario:active {
+  transform: scale(0.97);
+}
+
+.planoBtnVoltar {  
+  width: 100%;
+  padding: 11px;
+  background: transparent;
+  border: 1px solid #1a2640;
+  border-radius: 12px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: color 0.2s, border-color 0.2s, transform 0.15s;
+  -webkit-appearance: none;
+}
+
+.planoBtnVoltar:hover {
+  color: #94a3b8;
+  border-color: #3b82f6;
+  transform: translateX(-2px);
+}
+
+.planoBtnVoltar:active {
+  transform: scale(0.97);
+}
+
+/* ── Animação de entrada ─────────────────────────────────────────────────── */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .planoContainer {
+    padding: 16px 14px 40px;
+  }
+
+  .planoTitulo {
+    font-size: 19px;
+  }
+
+  .planoResultadoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .planoResultadoItem {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    padding: 12px 14px;
+  }
+
+  .planoResultadoLabel {
+    text-align: left;
+  }
+
+  .planoMetaValor {
+    font-size: 24px;
+  }
+
+  .planoObjetivoCard {
+    padding: 14px;
+  }
+}
+
+
+.btnVoltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: #94a3b8;
+  border: 1px solid #1e2d47;
+  border-radius: 12px;
+  padding: 10px 18px;
+  margin-bottom: 24px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, transform 0.2s;
+  letter-spacing: 0.01em;
+}
+
+.btnVoltar:hover {
+  color: #e2e8f0;
+  border-color: #3b82f6;
+  transform: translateX(-3px);
+}
+
+.btnVoltar:active {
+  transform: scale(0.97);
+}
+
+.btnVoltar{
+  width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+}

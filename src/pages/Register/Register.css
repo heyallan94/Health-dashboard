@@ -1,0 +1,232 @@
+/* Fundo preto total */
+.container {
+  background-color: #000;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Logo */
+.logoContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.logoImg {
+  width: 100%;
+  max-width: 150px;
+  height: auto;
+  animation: heart 5s linear infinite;
+}
+
+
+
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 280px;
+  align-items: center;
+}
+
+/* Inputs */
+.input {
+  text-align: center;
+  margin-bottom: 15px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #222;
+  outline: none;
+  background-color: #0a0a0a;
+  color: #fff;
+  font-size: 14px;
+}
+
+.input:focus {
+  border: 1px solid #555;
+}
+
+/* Botão principal */
+.button {
+  padding: 12px;
+  background-color: #fff;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 15px;
+  font-weight: bold;
+  transition: 0.2s;
+  width: 150px;
+}
+
+.button:hover {
+  background-color: #ddd;
+}
+
+/* Links */
+.links {
+  display: flex;
+  justify-content: space-between;
+}
+
+.linkButton {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 12px;
+  transition: 0.2s;
+}
+
+.linkButton:hover {
+  color: #fff;
+}
+
+.error {
+  color: #ff4d4d;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+/* Overlay escuro */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 999;
+}
+
+/* Imagem de loading */
+.loadingImg {
+  width: 80px;
+  height: 80px;
+  animation: spin 0.5s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes heart {
+  0% {
+    transform: scale(1.05);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1.05);
+  }
+}
+
+.eyeButton {
+  opacity: .7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 35px;
+  background-color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  margin: 5px 0;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+}
+
+.eyeButton:hover{
+  opacity: 1;
+}
+
+.title{
+    color: rgb(245, 179, 179);
+    margin: 10px;
+}
+
+
+.passwordStrength {
+  width: 100%;
+  margin-top: 10px;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.strengthBar {
+  width: 100%;
+  height: 8px;
+  background: #222;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.strengthFill {
+  height: 100%;
+  transition: 0.3s;
+  border-radius: 999px;
+}
+
+/* níveis */
+
+.strengthFill.level0 {
+  width: 0%;
+}
+
+.strengthFill.level1 {
+  width: 20%;
+  background: #ff3d00;
+}
+
+.strengthFill.level2 {
+  width: 40%;
+  background: #ff9100;
+}
+
+.strengthFill.level3 {
+  width: 60%;
+  background: #ffd600;
+}
+
+.strengthFill.level4 {
+  width: 80%;
+  background: #aeea00;
+}
+
+.strengthFill.level5 {
+  width: 100%;
+  background: #00c853;
+}
+
+.passwordRules {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.passwordRules p {
+  color: #777;
+  transition: 0.2s;
+}
+
+.passwordRules p.ok {
+  color: #00c853;
+}

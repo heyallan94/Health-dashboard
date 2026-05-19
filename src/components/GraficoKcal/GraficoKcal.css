@@ -1,0 +1,139 @@
+
+.graficoWrapper {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  background: #0d1526;
+  border: 1px solid #1a2640;
+  border-radius: 20px;
+  padding: 20px 16px 14px;
+  animation: fadeSlideUp 0.4s ease;
+}
+
+.graficoTopo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 0 4px;
+}
+
+.graficoTitulo {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #475569;
+  margin: 0;
+}
+
+
+.graficoLegenda {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.graficoLegendaTexto {
+  font-size: 11px;
+  color: #334155;
+  margin-right: 8px;
+}
+
+.graficoLegendaPonto {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.graficoLegendaPonto.amarelo {
+  background: #3b82f6;
+}
+
+
+.graficoLegendaPonto.tracejado {
+  width: 18px;
+  height: 2px;
+  border-radius: 0;
+  background: repeating-linear-gradient(
+    to right,
+    #facc15 0px,
+    #facc15 5px,
+    transparent 5px,
+    transparent 8px
+  );
+}
+
+
+.graficoTooltip {
+  background: #111e35;
+  border: 1px solid #1a2640;
+  border-radius: 12px;
+  padding: 10px 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  min-width: 140px;
+}
+
+.graficoTooltipData {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #334155;
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+
+.graficoTooltipKcal {
+  font-size: 18px;
+  font-weight: 700;
+  color: #facc15;
+  margin: 0 0 4px;
+  letter-spacing: -0.01em;
+}
+
+.graficoTooltipDiff {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0;
+}
+
+
+.graficoVazio {
+  text-align: center;
+  color: #1e2d47;
+  font-size: 13px;
+  padding: 40px 20px;
+  margin: 0;
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .graficoWrapper {
+    padding: 16px 10px 10px;
+    border-radius: 16px;
+  }
+
+  .graficoTopo {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .graficoTooltipKcal {
+    font-size: 16px;
+  }
+}
