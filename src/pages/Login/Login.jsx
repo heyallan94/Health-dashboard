@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { SupabaseClient } from "@supabase/supabase-js";
 import loadingImg from "/TI 2026/React/login-app/src/components/assets/loading.png";
 import { supabase } from "../../services/supabaseClient";
-
+import logoas from "/TI 2026/React/login-app/src/assets/logoas.png";
 
 function Login() {
   const [email, setEmail] = useState("");
