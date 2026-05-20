@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/Health-dashboard/static/css/main.7e4fe60e.css",
-    "main.js": "/Health-dashboard/static/js/main.9b5d227c.js",
+    "main.css": "/Health-dashboard/static/css/main.60862a0b.css",
+    "main.js": "/Health-dashboard/static/js/main.a9c1d105.js",
     "static/media/KcalDiaria.jpeg": "/Health-dashboard/static/media/KcalDiaria.6bdd1352f0ed03ba58f1.jpeg",
     "static/media/Calendario.jpg": "/Health-dashboard/static/media/Calendario.7947017b6e7ab0f7a8a6.jpg",
     "static/media/plano.jpg": "/Health-dashboard/static/media/plano.235708122c5039d3a700.jpg",
@@ -10,11 +10,11 @@
     "static/media/metas.jpg": "/Health-dashboard/static/media/metas.dfaf0f33de562f1de1dd.jpg",
     "static/media/logoas.png": "/Health-dashboard/static/media/logoas.5d224895f77ce00f144f.png",
     "index.html": "/Health-dashboard/index.html",
-    "main.7e4fe60e.css.map": "/Health-dashboard/static/css/main.7e4fe60e.css.map",
-    "main.9b5d227c.js.map": "/Health-dashboard/static/js/main.9b5d227c.js.map"
+    "main.60862a0b.css.map": "/Health-dashboard/static/css/main.60862a0b.css.map",
+    "main.a9c1d105.js.map": "/Health-dashboard/static/js/main.a9c1d105.js.map"
   },
   "entrypoints": [
-    "static/css/main.7e4fe60e.css",
-    "static/js/main.9b5d227c.js"
+    "static/css/main.60862a0b.css",
+    "static/js/main.a9c1d105.js"
   ]
 }
