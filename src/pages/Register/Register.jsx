@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from "react";
 import "./Register.css";
-import loadingImg from "/TI 2026/React/login-app/src/components/assets/loading.png";
+import loadingImg from "../../assets/loading.png";
+import logoas     from "../../assets/logoas.png";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../services/supabaseClient";
 
@@ -124,7 +125,7 @@ function Register() {
 
       {}
       <div className="logoContainer">
-        <img src="/logoas.png" alt="Logo" className="logoImg" />
+        <img src={logoas} alt="Logo" className="logoImg" />
       </div>
 
       <div className="title">Cadastro</div>
