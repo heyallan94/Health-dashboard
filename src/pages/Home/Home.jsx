@@ -538,6 +538,15 @@ function Home() {
 
   const carboTreino = avaliarCarboTreino(atualCarbo, pesoUsuario);
 
+ /* useEffect(() => {
+     const verificarLogin = async () => {
+       const { data } = await supabase.auth.getSession(); 
+       if (!data.session) {
+         navigate("/"); 
+        } }; 
+        verificarLogin(); 
+      }, []);*/
+
   return (
     <div className="homeContainer">
       {fase === "loading" ? (

@@ -197,6 +197,8 @@ function Calendario({ onClose }) {
   const toggleDia = (data) =>
     setDiaAberto((prev) => (prev === data ? null : data));
 
+  
+
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <div className="paginaCalendario">

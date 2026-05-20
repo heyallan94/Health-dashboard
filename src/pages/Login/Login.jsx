@@ -1,18 +1,17 @@
 import React, { useState } from "react";
-import "./Login.css";
 import { useNavigate } from "react-router-dom";
-import { SupabaseClient } from "@supabase/supabase-js";
-import loadingImg from "/TI 2026/React/login-app/src/components/assets/loading.png";
 import { supabase } from "../../services/supabaseClient";
-import logoas from "/TI 2026/React/login-app/src/assets/logoas.png";
+import loadingImg from "../../assets/loading.png";
+import logoas     from "../../assets/logoas.png";
+import "./Login.css";
 
 function Login() {
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [erro, setErro] = useState("");
-  const [loading, setLoading] = useState(false);
-
   const navigate = useNavigate();
+
+  const [email,   setEmail]   = useState("");
+  const [senha,   setSenha]   = useState("");
+  const [erro,    setErro]    = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
     if (!email || !senha) {
@@ -23,81 +22,81 @@ function Login() {
     setErro("");
     setLoading(true);
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: senha,
-    });
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password: senha,
+      });
 
-    setLoading(false);
+      if (error) {
+        setErro("Email ou senha inválidos ❌");
+        return;
+      }
 
-    if (error) {
-      setErro("Email ou senha inválidos ❌");
-      return;
-    }
+      // Persiste nome para uso offline (boas-vindas, header)
+      // A sessão JWT é gerenciada automaticamente pelo Supabase no localStorage
+      const nome = data.user.user_metadata?.nome || "";
+      if (nome) localStorage.setItem("nomeUsuario", nome);
 
-    // login ok
-    console.log("Usuário logado:", data.user);
-
-    setErro("Login autorizado ✅");
-
-    setTimeout(() => {
       navigate("/home");
-    }, 800);
+
+    } catch (err) {
+      console.error(err);
+      setErro("Erro interno ao fazer login");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleLogin();
   };
 
   return (
-    <div className="container">
+    <div className="loginPage">
 
-      {/* LOADING */}
       {loading && (
-        <div className="overlay">
-          <img src={loadingImg} alt="loading" className="loadingImg" />
+        <div className="loadingOverlay">
+          <img src={loadingImg} alt="loading" className="loadingSpinner" />
         </div>
       )}
 
-      {/* LOGO */}
-      <div className="logoContainer">
-        <img src="/logoas.png" alt="Logo" className="logoImg" />
+      <div className="logoWrapper">
+        <img src={logoas} alt="Logo" className="logoImage" />
       </div>
 
-      {/* FORM */}
-      <div className="form">
+      <div className="loginCard">
 
         <input
           type="email"
           placeholder="Email"
-          className="input"
+          className="loginInput"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
 
         <input
           type="password"
           placeholder="Senha"
-          className="input"
+          className="loginInput"
           value={senha}
           onChange={(e) => setSenha(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
 
-        {erro && <span className="error">{erro}</span>}
+        {erro && <span className="loginMessage">{erro}</span>}
 
-        <button className="button" onClick={handleLogin}>
+        <button className="loginButton" onClick={handleLogin}>
           Entrar
         </button>
 
-        <div className="links">
-          <button
-            className="linkButton"
-            onClick={() => navigate("/Register")}
-          >
-            Criar conta 
+        <div className="loginLinks">
+          <button className="loginLinkButton" onClick={() => navigate("/register")}>
+            Criar conta
           </button>
-
-          <button
-            className="linkButton"
-            onClick={() => navigate("/Forgot")}
-          >
-           | Esqueci a senha
+          <button className="loginLinkButton" onClick={() => navigate("/forgot")}>
+            | Esqueci a senha
           </button>
         </div>
 
