@@ -5,50 +5,46 @@ import { useNavigate } from "react-router-dom";
 
 const isDesktop = () => window.innerWidth >= 768;
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  Agrupa linhas da tabela `refeicoes` por dia (campo `datad`)
-// ─────────────────────────────────────────────────────────────────────────────
 const agruparPorDia = (linhas) => {
   const mapa = {};
 
   linhas.forEach((linha) => {
     const dia = linha.datad;
+
     if (!mapa[dia]) {
       mapa[dia] = {
-        data:          dia,
-        totalKcal:     0,
+        data: dia,
+        totalKcal: 0,
         totalProteina: 0,
-        totalCarbo:    0,
-        refeicoes:     [],
+        totalCarbo: 0,
+        refeicoes: [],
       };
     }
 
-    mapa[dia].totalKcal     += linha.kcal_total || 0;
+    mapa[dia].totalKcal += linha.kcal_total || 0;
     mapa[dia].totalProteina += linha.prot_total || 0;
-    mapa[dia].totalCarbo    += linha.carb_total || 0;
+    mapa[dia].totalCarbo += linha.carb_total || 0;
 
     mapa[dia].refeicoes.push({
-      id:    linha.id,
-      nome:  linha.nome_refeicao || "Refeição",
-      hora:  linha.hora          || "",
-      itens: linha.itens         || [],
+      id: linha.id,
+      nome: linha.nome_refeicao || "Refeição",
+      hora: linha.hora || "",
+      itens: linha.itens || [],
     });
   });
 
-  // Dias mais recentes primeiro
   return Object.values(mapa).sort((a, b) => {
     const parse = (s) => {
       const [d, m, y] = s.split("/");
       return new Date(`${y}-${m}-${d}`);
     };
+
     return parse(b.data) - parse(a.data);
   });
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  Cache local
-// ─────────────────────────────────────────────────────────────────────────────
 const CACHE_KEY = "calendarioDias_v2";
+const CACHE_MANUTENCAO = "manutencaoKcal";
 
 const lerCache = () => {
   try {
@@ -67,36 +63,82 @@ const salvarCache = (dias) => {
   }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  COMPONENTE
-// ─────────────────────────────────────────────────────────────────────────────
+const lerManutencaoCache = () => {
+  const direto = Number(localStorage.getItem(CACHE_MANUTENCAO)) || 0;
+  if (direto > 0) return direto;
+
+  try {
+    const plano = JSON.parse(localStorage.getItem("meuPlano") || "{}");
+    return Number(plano.manutencao || plano.manutencao_kcal) || 0;
+  } catch {
+    return 0;
+  }
+};
+
 function Calendario({ onClose }) {
   const navigate = useNavigate();
 
-  const [user,      setUser]      = useState(null);
-  const [dias,      setDias]      = useState(lerCache);
-  const [loading,   setLoading]   = useState(false);
+  const [user, setUser] = useState(null);
+  const [dias, setDias] = useState(lerCache);
+  const [loading, setLoading] = useState(false);
   const [diaAberto, setDiaAberto] = useState(null);
-  const [isMobile,  setIsMobile]  = useState(window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [manutencaoKcal, setManutencaoKcal] = useState(lerManutencaoCache);
 
-  // ── Auth ───────────────────────────────────────────────────────────────────
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       if (data?.user) setUser(data.user);
     });
   }, []);
 
-  // ── Resize ─────────────────────────────────────────────────────────────────
   useEffect(() => {
     const handle = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", handle);
+
     return () => window.removeEventListener("resize", handle);
   }, []);
 
-  // ── Carrega do Supabase ────────────────────────────────────────────────────
+  const carregarManutencao = useCallback(async (userId) => {
+    if (!userId) return;
+
+    const { data, error } = await supabase
+      .from("registros")
+      .select("manutencao_kcal")
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (error) {
+      console.warn("Erro ao carregar manutenção:", error.message);
+      return;
+    }
+
+    const valor = Number(data?.manutencao_kcal || 0);
+
+    if (valor > 0) {
+      setManutencaoKcal(valor);
+      localStorage.setItem(CACHE_MANUTENCAO, String(valor));
+
+      try {
+        const plano = JSON.parse(localStorage.getItem("meuPlano") || "{}");
+        localStorage.setItem(
+          "meuPlano",
+          JSON.stringify({
+            ...plano,
+            manutencao: valor,
+            manutencao_kcal: valor,
+          })
+        );
+      } catch {
+        // ignora cache inválido
+      }
+    }
+  }, []);
+
   const carregarDoSupabase = useCallback(async (userId) => {
     if (!userId) return;
+
     setLoading(true);
+
     try {
       const { data, error } = await supabase
         .from("refeicoes")
@@ -105,6 +147,7 @@ function Calendario({ onClose }) {
         .order("timestamp", { ascending: true });
 
       if (error) throw error;
+
       if (data) {
         const agrupado = agruparPorDia(data);
         setDias(agrupado);
@@ -118,19 +161,38 @@ function Calendario({ onClose }) {
   }, []);
 
   useEffect(() => {
-    if (user?.id) carregarDoSupabase(user.id);
-  }, [user?.id, carregarDoSupabase]);
+    if (!user?.id) return;
 
-  // Atualiza quando KcalDiaria dispara evento
+    carregarManutencao(user.id);
+    carregarDoSupabase(user.id);
+  }, [user?.id, carregarManutencao, carregarDoSupabase]);
+
   useEffect(() => {
-    const handle = () => { if (user?.id) carregarDoSupabase(user.id); };
+    const handle = () => {
+      if (user?.id) carregarDoSupabase(user.id);
+    };
+
     window.addEventListener("kcalAtualizada", handle);
+
     return () => window.removeEventListener("kcalAtualizada", handle);
   }, [user?.id, carregarDoSupabase]);
 
-  // ── Excluir refeição individual ────────────────────────────────────────────
+  useEffect(() => {
+    const handlePlano = () => {
+      const valor = lerManutencaoCache();
+      if (valor > 0) setManutencaoKcal(valor);
+
+      if (user?.id) carregarManutencao(user.id);
+    };
+
+    window.addEventListener("planoCriado", handlePlano);
+
+    return () => window.removeEventListener("planoCriado", handlePlano);
+  }, [user?.id, carregarManutencao]);
+
   const excluirRefeicao = async (e, refeicaoId) => {
     e.stopPropagation();
+
     if (!window.confirm("Excluir essa refeição?")) return;
 
     const { error } = await supabase
@@ -139,32 +201,47 @@ function Calendario({ onClose }) {
       .eq("id", refeicaoId)
       .eq("user_id", user.id);
 
-    if (error) { console.warn(error.message); alert("Erro ao excluir."); return; }
+    if (error) {
+      console.warn(error.message);
+      alert("Erro ao excluir.");
+      return;
+    }
 
     setDias((prev) => {
       const novo = prev
         .map((dia) => {
           const restantes = dia.refeicoes.filter((r) => r.id !== refeicaoId);
+
           return {
             ...dia,
-            refeicoes:     restantes,
-            totalKcal:     restantes.reduce((s, r) => s + r.itens.reduce((a, i) => a + (i.kcal        || 0), 0), 0),
-            totalProteina: restantes.reduce((s, r) => s + r.itens.reduce((a, i) => a + (i.proteina    || 0), 0), 0),
-            totalCarbo:    restantes.reduce((s, r) => s + r.itens.reduce((a, i) => a + (i.carboidrato || 0), 0), 0),
+            refeicoes: restantes,
+            totalKcal: restantes.reduce(
+              (s, r) => s + r.itens.reduce((a, i) => a + (i.kcal || 0), 0),
+              0
+            ),
+            totalProteina: restantes.reduce(
+              (s, r) => s + r.itens.reduce((a, i) => a + (i.proteina || 0), 0),
+              0
+            ),
+            totalCarbo: restantes.reduce(
+              (s, r) => s + r.itens.reduce((a, i) => a + (i.carboidrato || 0), 0),
+              0
+            ),
           };
         })
         .filter((dia) => dia.refeicoes.length > 0);
+
       salvarCache(novo);
       return novo;
     });
   };
 
-  // ── Excluir dia inteiro ────────────────────────────────────────────────────
-  const excluirDia = async (e, data) => {
+  const excluirDia = async (e, dataDia) => {
     e.stopPropagation();
-    if (!window.confirm(`Excluir todas as refeições de ${data}?`)) return;
 
-    const ids = dias.find((d) => d.data === data)?.refeicoes.map((r) => r.id) || [];
+    if (!window.confirm(`Excluir todas as refeições de ${dataDia}?`)) return;
+
+    const ids = dias.find((d) => d.data === dataDia)?.refeicoes.map((r) => r.id) || [];
 
     const { error } = await supabase
       .from("refeicoes")
@@ -172,38 +249,35 @@ function Calendario({ onClose }) {
       .in("id", ids)
       .eq("user_id", user.id);
 
-    if (error) { console.warn(error.message); alert("Erro ao excluir dia."); return; }
+    if (error) {
+      console.warn(error.message);
+      alert("Erro ao excluir dia.");
+      return;
+    }
 
     setDias((prev) => {
-      const novo = prev.filter((d) => d.data !== data);
+      const novo = prev.filter((d) => d.data !== dataDia);
       salvarCache(novo);
       return novo;
     });
 
-    if (diaAberto === data) setDiaAberto(null);
+    if (diaAberto === dataDia) setDiaAberto(null);
   };
 
-  // ── Totais e cálculo de resultado ──────────────────────────────────────────
-  const totalConsumido  = dias.reduce((acc, d) => acc + d.totalKcal, 0);
-  const metaKcal        = Number(localStorage.getItem("metaKcal")) || 0;
-  const metaTotal       = metaKcal * dias.length;
-  const saldoKcal       = metaTotal - totalConsumido;
-  const massaKg         = saldoKcal / 7700;
+  const totalConsumido = dias.reduce((acc, d) => acc + d.totalKcal, 0);
+  const metaTotal = manutencaoKcal * dias.length;
+  const saldoKcal = metaTotal - totalConsumido;
+  const massaKg = saldoKcal / 7700;
   const classeResultado = saldoKcal >= 0 ? "positivo" : "negativo";
 
   const disclaimerKcal = () =>
     window.confirm("*O resultado de massa é aproximado* (7700 kcal ≈ 1kg de gordura)");
 
-  const toggleDia = (data) =>
-    setDiaAberto((prev) => (prev === data ? null : data));
+  const toggleDia = (dataDia) =>
+    setDiaAberto((prev) => (prev === dataDia ? null : dataDia));
 
-  
-
-  // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <div className="paginaCalendario">
-
-      {/* Voltar — só mobile */}
       <div className="areaVoltar">
         <button
           className="btnVoltar"
@@ -214,35 +288,55 @@ function Calendario({ onClose }) {
         </button>
       </div>
 
-      {/* Carregando */}
       {loading && (
         <p className="secaoLabel" style={{ textAlign: "center" }}>
           Carregando...
         </p>
       )}
 
-      {/* Card de resultado */}
-      {dias.length > 0 && (
+      {dias.length > 0 && manutencaoKcal > 0 && (
         <div className="cardResultado" onClick={disclaimerKcal}>
           <p className="kcalResultado">
-            {saldoKcal >= 0 ? "−" : "+"}{Math.abs(saldoKcal).toFixed(0)} kcal
+            {saldoKcal >= 0 ? "−" : "+"}
+            {Math.abs(saldoKcal).toFixed(0)} kcal
           </p>
+
           <p className={`massaResultado ${classeResultado}`}>
-            Resultado estimado: {massaKg >= 0 ? "−" : "+"}{Math.abs(massaKg).toFixed(2)} kg
+            Resultado estimado: {massaKg >= 0 ? "−" : "+"}
+            {Math.abs(massaKg).toFixed(2)} kg
           </p>
+
+          <div className="manutencaoInfo">
+            <p className="manutencaoValor">
+              Manutenção: {manutencaoKcal.toFixed(0)} kcal/dia
+            </p>
+
+            <p className="manutencaoTexto">
+              Seu corpo gasta em manutenção aproximadamente{" "}
+              <strong>{manutencaoKcal.toFixed(0)} kcal</strong> em um dia ativo.
+            </p>
+
+            <p className="manutencaoAviso">
+              Lembrando: isso considera um dia com atividade normal. Não significa que você
+              gastaria esse valor ficando deitado 100% do dia.
+            </p>
+          </div>
         </div>
       )}
 
-      {/* Label contador de dias */}
+      {dias.length > 0 && manutencaoKcal <= 0 && (
+        <p className="secaoLabel" style={{ textAlign: "center" }}>
+          Manutenção kcal não encontrada no plano.
+        </p>
+      )}
+
       {dias.length > 0 && (
         <p className="secaoLabel">
           {dias.length} {dias.length === 1 ? "dia registrado" : "dias registrados"}
         </p>
       )}
 
-      {/* ── Carrossel (desktop) / Stack (mobile) ── */}
       <div className="calendarioCarrossel">
-
         {!loading && dias.length === 0 && (
           <p className="calendarioContainerSemFlex">
             Nenhuma refeição registrada ainda.
@@ -258,9 +352,9 @@ function Calendario({ onClose }) {
               else toggleDia(dia.data);
             }}
           >
-            {/* Header */}
             <div className="cardHeader">
               <span className="cardData">{dia.data}</span>
+
               <button
                 className="btnExcluirDia"
                 onClick={(e) => excluirDia(e, dia.data)}
@@ -271,36 +365,35 @@ function Calendario({ onClose }) {
 
             <hr className="linhaSep" />
 
-            {/* Macros — 3 badges */}
             <div className="cardMacros">
               <div className="macroBadge kcal">
                 <span>{dia.totalKcal}</span>
                 <small>kcal</small>
               </div>
+
               <div className="macroBadge prot">
                 <span>{dia.totalProteina}g</span>
                 <small>prot</small>
               </div>
+
               <div className="macroBadge carbo">
                 <span>{dia.totalCarbo}g</span>
                 <small>carbo</small>
               </div>
             </div>
 
-            {/* Qtd refeições */}
             <p className="cardQtdRefeicoes">
               {dia.refeicoes.length} {dia.refeicoes.length === 1 ? "refeição" : "refeições"}
             </p>
 
-            {/* Expansão desktop */}
             {!isMobile && diaAberto === dia.data && (
               <div className="listaAlimentos">
                 {dia.refeicoes.map((ref) => (
                   <div key={ref.id} className="refeicaoDia">
-
                     <div className="refeicaoDiaHeader">
                       <p className="tituloRefeicao">{ref.nome}</p>
                       {ref.hora && <span className="horaRefeicao">{ref.hora}</span>}
+
                       <button
                         className="btnExcluirDia"
                         onClick={(e) => excluirRefeicao(e, ref.id)}
@@ -318,35 +411,33 @@ function Calendario({ onClose }) {
                             {item.tipo === "grama" ? "g" : item.tipo === "ml" ? "ml" : "un"})
                           </small>
                         </span>
+
                         <span className="itemKcal">{item.kcal} k</span>
                         <span className="itemProt">{item.proteina}g</span>
                       </div>
                     ))}
-
                   </div>
                 ))}
               </div>
             )}
-
           </div>
         ))}
-
       </div>
 
-      {/* ── Modal mobile ── */}
       {isMobile && diaAberto && (
         <div className="modalOverlay" onClick={() => setDiaAberto(null)}>
           <div className="modalContent" onClick={(e) => e.stopPropagation()}>
-
-            <button className="fecharModal" onClick={() => setDiaAberto(null)}>×</button>
+            <button className="fecharModal" onClick={() => setDiaAberto(null)}>
+              ×
+            </button>
 
             {dias
               .filter((d) => d.data === diaAberto)
               .map((dia) => (
                 <div key={dia.data}>
-
                   <div className="modalHeader">
                     <h3 className="modalTitulo">{dia.data}</h3>
+
                     <div className="modalMacros">
                       <span className="mKcal">{dia.totalKcal} kcal</span>
                       <span className="mProt">{dia.totalProteina}g prot</span>
@@ -356,10 +447,10 @@ function Calendario({ onClose }) {
 
                   {dia.refeicoes.map((ref) => (
                     <div key={ref.id} className="refeicaoModal">
-
                       <div className="refeicaoModalHeader">
                         <p className="refeicaoModalNome">{ref.nome}</p>
                         {ref.hora && <span className="refeicaoModalHora">{ref.hora}</span>}
+
                         <button
                           className="btnExcluirDia"
                           onClick={(e) => excluirRefeicao(e, ref.id)}
@@ -377,21 +468,18 @@ function Calendario({ onClose }) {
                               {item.tipo === "grama" ? "g" : item.tipo === "ml" ? "ml" : "un"})
                             </small>
                           </span>
+
                           <span className="itemKcal">{item.kcal} k</span>
                           <span className="itemProt">{item.proteina}g</span>
                         </div>
                       ))}
-
                     </div>
                   ))}
-
                 </div>
               ))}
-
           </div>
         </div>
       )}
-
     </div>
   );
 }

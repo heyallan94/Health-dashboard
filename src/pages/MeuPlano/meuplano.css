@@ -573,3 +573,136 @@
     justify-content: center;
     margin-bottom: 24px;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   meuplano.css — ADIÇÕES (cole no final do seu arquivo existente)
+   Novos elementos: loading, manutenção, parecer corporal, campo opcional
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ── Loading ─────────────────────────────────────────────────────────────── */
+.planoCarregando {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 300px;
+}
+
+.planoSpinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(255, 255, 255, 0.12);
+  border-top: 3px solid #fff;
+  border-radius: 50%;
+  animation: spinPlano 0.8s linear infinite;
+}
+
+@keyframes spinPlano {
+  to { transform: rotate(360deg); }
+}
+
+.planoCarregandoTexto {
+  color: #64748b;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* ── Campo opcional ──────────────────────────────────────────────────────── */
+.planoOpcional {
+  font-size: 11px;
+  font-weight: 400;
+  color: #475569;
+  letter-spacing: 0.02em;
+}
+
+/* ── Box de manutenção ───────────────────────────────────────────────────── */
+.planoManutencaoBox {
+  background: #111e35;
+  border: 1px solid #1e3a5f;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin: 16px 0;
+}
+
+.planoManutencaoTexto {
+  font-size: 14px;
+  color: #cbd5e1;
+  line-height: 1.5;
+  margin: 0 0 6px;
+}
+
+.planoManutencaoTexto strong {
+  color: #facc15;
+}
+
+.planoManutencaoSub {
+  font-size: 12px;
+  color: #475569;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ── Card parecer corporal ───────────────────────────────────────────────── */
+.planoParecer {
+  border-radius: 16px;
+  padding: 16px 18px;
+  margin: 16px 0;
+  border: 1px solid transparent;
+}
+
+.planoParecerTopo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.planoParecerLabel {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.planoParecerFrase {
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ── Cores do parecer ────────────────────────────────────────────────────── */
+.parecer-verde {
+  background: rgba(74, 222, 128, 0.08);
+  border-color: rgba(74, 222, 128, 0.3);
+}
+.parecer-verde .planoParecerLabel { color: #4ade80; }
+.parecer-verde .planoParecerFrase { color: #a7f3d0; }
+
+.parecer-azul {
+  background: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+.parecer-azul .planoParecerLabel { color: #60a5fa; }
+.parecer-azul .planoParecerFrase { color: #bfdbfe; }
+
+.parecer-amarelo {
+  background: rgba(250, 204, 21, 0.08);
+  border-color: rgba(250, 204, 21, 0.3);
+}
+.parecer-amarelo .planoParecerLabel { color: #facc15; }
+.parecer-amarelo .planoParecerFrase { color: #fef08a; }
+
+.parecer-laranja {
+  background: rgba(251, 146, 60, 0.08);
+  border-color: rgba(251, 146, 60, 0.3);
+}
+.parecer-laranja .planoParecerLabel { color: #fb923c; }
+.parecer-laranja .planoParecerFrase { color: #fed7aa; }
+
+.parecer-vermelho {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+.parecer-vermelho .planoParecerLabel { color: #f87171; }
+.parecer-vermelho .planoParecerFrase { color: #fecaca; }

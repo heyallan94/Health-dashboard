@@ -1,6 +1,5 @@
 /* Fundo preto total */
 .container {
-  background-color: #000;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -35,6 +34,7 @@
   flex-direction: column;
   width: 280px;
   align-items: center;
+  text-align: center;
 }
 
 /* Inputs */

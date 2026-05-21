@@ -87,6 +87,39 @@
 .massaResultado.positivo { color: #4ade80; }
 .massaResultado.negativo { color: #f87171; }
 
+.manutencaoInfo {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #1a2640;
+}
+
+.manutencaoValor {
+  font-size: 13px;
+  font-weight: 800;
+  color: #3b82f6;
+  margin-bottom: 6px;
+  letter-spacing: 0.01em;
+}
+
+.manutencaoTexto {
+  font-size: 12px;
+  line-height: 1.45;
+  color: #94a3b8;
+  margin-bottom: 6px;
+}
+
+.manutencaoTexto strong {
+  color: #facc15;
+  font-weight: 800;
+}
+
+.manutencaoAviso {
+  font-size: 11px;
+  line-height: 1.45;
+  color: #475569;
+}
+
+
 /* ── Label de seção ──────────────────────────────────────────────────────── */
 .secaoLabel {
   font-size: 11px;

@@ -1,11 +1,7 @@
 /* ─────────────────────────────────────────────────────────────────────────────
-   Exercicio.css  —  Design System: Deep Navy + Neon Accents
-   Paleta: #080e1a · #0d1526 · #111e35 · #1a2640
-   Acentos: #3b82f6 · #facc15 · #4ade80 · #22d3ee · #f87171
-   Fonte display: 'SF Pro Display' fallback via system-ui
+   Exercicio.css  —  Deep Navy + Neon Accents
 ───────────────────────────────────────────────────────────────────────────── */
 
-/* ── Página ──────────────────────────────────────────────────────────────── */
 .exercicioPage {
   width: 100%;
   max-width: 680px;
@@ -18,7 +14,6 @@
   font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
 }
 
-/* ── Botão voltar ────────────────────────────────────────────────────────── */
 .exBtnBack {
   display: inline-flex;
   align-items: center;
@@ -41,10 +36,7 @@
   transform: translateX(-2px);
 }
 
-/* ── Header ──────────────────────────────────────────────────────────────── */
-.exHeader {
-  margin-bottom: 4px;
-}
+.exHeader { margin-bottom: 4px; }
 
 .exTitle {
   font-size: 26px;
@@ -64,7 +56,7 @@
   border-radius: 10px;
 }
 
-/* ── Badges de consistência ──────────────────────────────────────────────── */
+/* ── Badges ──────────────────────────────────────────────────────────────── */
 .exBadgeRow {
   display: flex;
   gap: 8px;
@@ -82,23 +74,9 @@
   border-radius: 20px;
 }
 
-.exBadge--green {
-  background: rgba(74, 222, 128, 0.1);
-  border: 1px solid rgba(74, 222, 128, 0.25);
-  color: #4ade80;
-}
-
-.exBadge--blue {
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.25);
-  color: #60a5fa;
-}
-
-.exBadge--amber {
-  background: rgba(250, 204, 21, 0.1);
-  border: 1px solid rgba(250, 204, 21, 0.25);
-  color: #facc15;
-}
+.exBadge--green { background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.25); color: #4ade80; }
+.exBadge--blue  { background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25); color: #60a5fa; }
+.exBadge--amber { background: rgba(250,204,21,0.1); border: 1px solid rgba(250,204,21,0.25); color: #facc15; }
 
 /* ── Card base ───────────────────────────────────────────────────────────── */
 .exCard {
@@ -116,6 +94,91 @@
   text-transform: uppercase;
   color: #475569;
   margin-bottom: 16px;
+}
+
+/* ── Card salvo hoje ─────────────────────────────────────────────────────── */
+.exCard--salvoHoje {
+  border-color: rgba(74, 222, 128, 0.25);
+  background: linear-gradient(135deg, #0d1526 0%, #0b1a12 100%);
+}
+
+.exSalvoHojeRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.exSalvoHojeEmoji {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.exSalvoHojeInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.exSalvoHojeNome {
+  font-size: 15px;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin-bottom: 2px;
+}
+
+.exSalvoHojeKcal {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4ade80;
+}
+
+.exSalvoAviso {
+  font-size: 11px;
+  color: #334155;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+/* ── Botão excluir (card salvo hoje) ─────────────────────────────────────── */
+.exBtnExcluir {
+  background: transparent;
+  border: 1px solid rgba(239,68,68,0.2);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: #475569;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.exBtnExcluir:hover {
+  background: rgba(239,68,68,0.12);
+  border-color: rgba(239,68,68,0.4);
+  color: #f87171;
+}
+
+/* ── Botão excluir pequeno (histórico) ───────────────────────────────────── */
+.exBtnExcluirSmall {
+  background: transparent;
+  border: none;
+  color: #334155;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  transition: color 0.2s, background 0.2s;
+  line-height: 1;
+}
+
+.exBtnExcluirSmall:hover {
+  color: #f87171;
+  background: rgba(239,68,68,0.08);
 }
 
 /* ── Carrossel ───────────────────────────────────────────────────────────── */
@@ -137,9 +200,7 @@
   flex: 1;
 }
 
-.exCarrossel::-webkit-scrollbar {
-  display: none;
-}
+.exCarrossel::-webkit-scrollbar { display: none; }
 
 .exExercicioItem {
   flex-shrink: 0;
@@ -163,20 +224,15 @@
   transform: translateY(-2px);
 }
 
-.exExercicioItem:active {
-  transform: scale(0.96);
-}
+.exExercicioItem:active { transform: scale(0.96); }
 
 .exExercicioItem--ativo {
   border-color: #3b82f6;
-  background: rgba(59, 130, 246, 0.12);
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2), 0 4px 16px rgba(59, 130, 246, 0.1);
+  background: rgba(59,130,246,0.12);
+  box-shadow: 0 0 0 2px rgba(59,130,246,0.2), 0 4px 16px rgba(59,130,246,0.1);
 }
 
-.exExercicioEmoji {
-  font-size: 24px;
-  line-height: 1;
-}
+.exExercicioEmoji { font-size: 24px; line-height: 1; }
 
 .exExercicioLabel {
   font-size: 11px;
@@ -187,11 +243,8 @@
   white-space: nowrap;
 }
 
-.exExercicioItem--ativo .exExercicioLabel {
-  color: #93c5fd;
-}
+.exExercicioItem--ativo .exExercicioLabel { color: #93c5fd; }
 
-/* Setas desktop */
 .exArrow {
   flex-shrink: 0;
   width: 32px;
@@ -216,16 +269,19 @@
   border-color: #3b82f6;
 }
 
-/* ── Input de atividade ──────────────────────────────────────────────────── */
+/* ── Input ───────────────────────────────────────────────────────────────── */
+/* FIX: wrapper como grid para a unidade nunca sair da div */
 .exInputWrapper {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto;
   align-items: center;
   gap: 10px;
   margin-bottom: 10px;
+  overflow: hidden;          /* impede overflow horizontal */
 }
 
 .exInput {
-  flex: 1;
+  min-width: 0;              /* essencial no grid para não vazar */
   padding: 14px 16px;
   background: #111e35;
   border: 1px solid #1a2640;
@@ -237,6 +293,7 @@
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
   -webkit-appearance: none;
+  width: 100%;
 }
 
 .exInput::placeholder {
@@ -247,21 +304,20 @@
 
 .exInput:focus {
   border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
 }
 
-/* Remove setas do input number */
 .exInput::-webkit-outer-spin-button,
-.exInput::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-}
+.exInput::-webkit-inner-spin-button { -webkit-appearance: none; }
 
 .exInputUnit {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: #475569;
   letter-spacing: 0.04em;
   white-space: nowrap;
+  flex-shrink: 0;
+  padding-right: 4px;
 }
 
 .exHint {
@@ -269,28 +325,44 @@
   color: #334155;
   letter-spacing: 0.01em;
   line-height: 1.5;
+  margin-bottom: 12px;
 }
+
+/* ── Botão Calcular ──────────────────────────────────────────────────────── */
+.exBtnCalcular {
+  width: 100%;
+  padding: 13px;
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  border: none;
+  border-radius: 13px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(59,130,246,0.25);
+  transition: opacity 0.2s, transform 0.15s;
+  margin-top: 4px;
+}
+
+.exBtnCalcular:hover { opacity: 0.9; transform: translateY(-1px); }
+.exBtnCalcular:active { transform: scale(0.98); }
 
 /* ── Card de resultado ───────────────────────────────────────────────────── */
-.exCard--resultado {
-  border-color: #1e3052;
-}
+.exCard--resultado { border-color: #1e3052; }
 
 .exCard--bom {
-  border-color: rgba(74, 222, 128, 0.25);
+  border-color: rgba(74,222,128,0.25);
   background: linear-gradient(135deg, #0d1526 0%, #0b1a12 100%);
 }
 
 .exCard--alto {
-  border-color: rgba(250, 204, 21, 0.25);
+  border-color: rgba(250,204,21,0.25);
   background: linear-gradient(135deg, #0d1526 0%, #1a1505 100%);
 }
 
-.exCard--ok {
-  border-color: rgba(59, 130, 246, 0.2);
-}
+.exCard--ok { border-color: rgba(59,130,246,0.2); }
 
-/* Display de kcal */
 .exKcalDisplay {
   display: flex;
   align-items: baseline;
@@ -306,9 +378,7 @@
   line-height: 1;
 }
 
-.exCard--alto .exKcalValor {
-  color: #facc15;
-}
+.exCard--alto .exKcalValor { color: #facc15; }
 
 .exKcalUnidade {
   font-size: 20px;
@@ -317,7 +387,6 @@
   padding-bottom: 4px;
 }
 
-/* Input de edição */
 .exKcalInput {
   font-size: 52px;
   font-weight: 800;
@@ -332,9 +401,7 @@
 }
 
 .exKcalInput::-webkit-outer-spin-button,
-.exKcalInput::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-}
+.exKcalInput::-webkit-inner-spin-button { -webkit-appearance: none; }
 
 .exDuracao {
   font-size: 13px;
@@ -359,7 +426,6 @@
   letter-spacing: 0.01em;
 }
 
-/* ── Botões do resultado ─────────────────────────────────────────────────── */
 .exBotoesResultado {
   display: flex;
   gap: 10px;
@@ -376,23 +442,13 @@
   font-weight: 700;
   letter-spacing: 0.04em;
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
+  box-shadow: 0 4px 16px rgba(59,130,246,0.25);
   transition: opacity 0.2s, transform 0.15s;
 }
 
-.exBtnPrimary:hover:not(:disabled) {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-
-.exBtnPrimary:active {
-  transform: scale(0.98);
-}
-
-.exBtnPrimary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+.exBtnPrimary:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+.exBtnPrimary:active { transform: scale(0.98); }
+.exBtnPrimary:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .exBtnSecondary {
   padding: 13px 18px;
@@ -409,7 +465,7 @@
 .exBtnSecondary:hover {
   border-color: #3b82f6;
   color: #e2e8f0;
-  background: rgba(59, 130, 246, 0.05);
+  background: rgba(59,130,246,0.05);
 }
 
 .exSalvoOk {
@@ -433,9 +489,7 @@
 }
 
 /* ── Histórico ───────────────────────────────────────────────────────────── */
-.exHistoricoSection {
-  margin-top: 8px;
-}
+.exHistoricoSection { margin-top: 8px; }
 
 .exHistoricoTitulo {
   font-size: 14px;
@@ -476,30 +530,13 @@
   transform: translateY(-1px);
 }
 
-.exHistoricoEmoji {
-  font-size: 24px;
-  flex-shrink: 0;
-  width: 36px;
-  text-align: center;
-}
+.exHistoricoEmoji { font-size: 24px; flex-shrink: 0; width: 36px; text-align: center; }
 
-.exHistoricoInfo {
-  flex: 1;
-  min-width: 0;
-}
+.exHistoricoInfo { flex: 1; min-width: 0; }
 
-.exHistoricoNome {
-  font-size: 14px;
-  font-weight: 600;
-  color: #e2e8f0;
-  margin-bottom: 2px;
-}
+.exHistoricoNome { font-size: 14px; font-weight: 600; color: #e2e8f0; margin-bottom: 2px; }
 
-.exHistoricoData {
-  font-size: 12px;
-  color: #475569;
-  letter-spacing: 0.02em;
-}
+.exHistoricoData { font-size: 12px; color: #475569; letter-spacing: 0.02em; }
 
 .exHistoricoKcal {
   display: flex;
@@ -525,51 +562,31 @@
   margin-top: 1px;
 }
 
-.exHistoricoEditadoBadge {
-  font-size: 9px;
-  font-weight: 600;
-  color: #facc15;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin-top: 3px;
-  padding: 2px 5px;
-  background: rgba(250, 204, 21, 0.1);
-  border: 1px solid rgba(250, 204, 21, 0.2);
-  border-radius: 4px;
-}
-
 /* ── Animação ────────────────────────────────────────────────────────────── */
 @keyframes exFadeUp {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0);   }
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   DESKTOP (768px+)
-───────────────────────────────────────────────────────────────────────────── */
+/* ── Desktop ─────────────────────────────────────────────────────────────── */
 @media (min-width: 768px) {
-  .exercicioPage {
-    padding: 28px 24px 60px;
-    max-width: 600px;
-  }
-
-  .exTitle {
-    font-size: 32px;
-  }
-
-  .exHistoricoGrid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
-
-  .exCard {
-    padding: 24px;
-  }
+  .exercicioPage { padding: 28px 24px 60px; max-width: 600px; }
+  .exTitle { font-size: 32px; }
+  .exHistoricoGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .exCard { padding: 24px; }
 }
 
 @media (min-width: 1024px) {
-  .exercicioPage {
-    max-width: 680px;
+  .exercicioPage { max-width: 680px; }
+}
+
+/* ── Mobile: garante que a unidade nunca vaze ────────────────────────────── */
+@media (max-width: 480px) {
+  .exInputWrapper {
+    grid-template-columns: 1fr auto;
+    gap: 8px;
   }
+
+  .exInput { font-size: 18px; padding: 12px 14px; }
+  .exInputUnit { font-size: 13px; }
 }

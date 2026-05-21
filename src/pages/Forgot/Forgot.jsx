@@ -45,8 +45,8 @@ function Forgot() {
         </div>
       )}
 
-      <div className="logoContainer">
-        <img src="/logoas.png" alt="Logo" className="logoImg" />
+      <div className="logoWrapper">
+        <img src={logoas} alt="Logo" className="logoImg" />
       </div>
 
       <div className="title">Recuperar senha</div>

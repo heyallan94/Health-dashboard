@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import "./Register.css";
 import loadingImg from "../../assets/loading.png";
@@ -124,7 +123,7 @@ function Register() {
       )}
 
       {}
-      <div className="logoContainer">
+      <div className="logoWrapper">
         <img src={logoas} alt="Logo" className="logoImg" />
       </div>
 

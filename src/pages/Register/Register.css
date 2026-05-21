@@ -17,9 +17,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 40px 24px;
-  overflow-y: auto;
+  justify-content: flex-start;
+  padding: 48px 24px 40px;
 }
 
 .logoContainer {
@@ -27,11 +26,10 @@ body {
   justify-content: center;
   align-items: center;
   margin-bottom: 16px;
-  flex-shrink: 0;
 }
 
 .logoImg {
-  width: 90px;
+  width: 100px;
   height: auto;
   filter: drop-shadow(0 0 16px rgba(59, 130, 246, 0.3));
 }
@@ -90,7 +88,6 @@ body {
   font-size: 15px;
   padding: 6px 12px;
   cursor: pointer;
-  align-self: flex-start;
   margin-bottom: 12px;
   transition: border-color 0.2s, color 0.2s, background 0.2s;
 }
@@ -233,6 +230,25 @@ body {
 
 @media (max-width: 400px) {
   .container {
+    padding: 36px 16px 32px;
+  }
+
+  .form {
+    padding: 22px 16px;
+    border-radius: 20px;
+  }
+
+  .logoImg {
+    width: 80px;
+  }
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@media (max-width: 400px) {
+  .container {
     padding: 32px 16px;
   }
 
@@ -249,5 +265,38 @@ body {
 
 .logoImg{
     margin-top: 100%;
-    padding-top: 45px;
+    
+}
+
+
+.logoWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 36px;
+}
+
+.logoImage {
+  width: 100%;
+  max-width: 140px;
+  height: auto;
+  animation: pulse 5s ease-in-out infinite;
+  filter: drop-shadow(0 0 18px rgba(59, 130, 246, 0.25));
+}
+
+@media (max-width: 400px) {
+  .loginCard {
+    padding: 28px 20px;
+    border-radius: 20px;
+  }
+
+  .logoImage {
+    max-width: 120px;
+  }
+}
+
+@keyframes pulse {
+  0%   { transform: scale(1.00); }
+  50%  { transform: scale(1.07); }
+  100% { transform: scale(1.00); }
 }

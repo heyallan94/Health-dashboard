@@ -62,7 +62,7 @@ function Login() {
       )}
 
       <div className="logoWrapper">
-        <img src={logoas} alt="Logo" className="logoImage" />
+        <img src={logoas} alt="Logo" className="logoImg" />
       </div>
 
       <div className="loginCard">
@@ -99,7 +99,7 @@ function Login() {
             | Esqueci a senha
           </button>
         </div>
-        <div className="version">v0.5262250</div>
+        <div className="version">v0.210526</div>
       </div>
     </div>
   );
