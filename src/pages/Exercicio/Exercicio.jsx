@@ -86,9 +86,9 @@ function Exercicio({ onClose }) {
       .from("gasto_calorico")
       .select("*")
       .eq("user_id", user.id)
-      .gte("created_At", inicio)
-      .lt("created_At", fim)
-      .order("created_At", { ascending: false });
+      .gte("created_at", inicio)
+      .lt("created_at", fim)
+      .order("created_at", { ascending: false });
 
     if (!error && data) {
       setRegistrosHoje(data);
@@ -107,7 +107,7 @@ function Exercicio({ onClose }) {
       .from("gasto_calorico")
       .select("*")
       .eq("user_id", user.id)
-      .order("created_At", { ascending: false })
+      .order("created_at", { ascending: false })
       .limit(20);
 
     if (!error && data) {
@@ -234,8 +234,7 @@ function Exercicio({ onClose }) {
 
     setRegistrosHoje((prev) => [data, ...prev]);
     setHistorico((prev) => [data, ...prev]);
-
-    setConsistencia((prev) => calcularConsistencia([data, ...historico]));
+    setConsistencia(calcularConsistencia([data, ...historico]));
 
     setConfirmando(false);
     setEditando(false);
@@ -548,7 +547,7 @@ function Exercicio({ onClose }) {
                   </p>
 
                   <p className="exHistoricoData">
-                    {formatarData(reg.created_At)}
+                    {formatarData(reg.created_at)}
                   </p>
                 </div>
 

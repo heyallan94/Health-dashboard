@@ -867,3 +867,53 @@ body {
 .btnVoltarOculto {
   display: none;
 }
+
+.tituloDataRefeicao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.tituloDataRefeicao .tituloClicavel,
+.tituloDataRefeicao .tituloEditavel {
+  flex: 1;
+  min-width: 0;
+}
+
+.inputDataRefeicao {
+  flex-shrink: 0;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid #1a2640;
+  background: #111e35;
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 700;
+  outline: none;
+}
+
+.inputDataRefeicao:focus {
+  border-color: #3b82f6;
+  color: #e2e8f0;
+}
+
+.inputDataRefeicao::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.55;
+  cursor: pointer;
+}
+
+@media (max-width: 480px) {
+  .tituloDataRefeicao {
+    gap: 8px;
+  }
+
+  .inputDataRefeicao {
+    width: 128px;
+    font-size: 11px;
+    padding: 0 8px;
+  }
+}

@@ -422,6 +422,26 @@ const BASE_PADRAO = {
 const formatarNome = (key) =>
   key.replaceAll("_", " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
+const dataInputHoje = () => {
+  const d = new Date();
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+};
+
+const inputParaDataBR = (valor) => {
+  if (!valor) return dataHoje();
+  const [yyyy, mm, dd] = valor.split("-");
+  return `${dd}/${mm}/${yyyy}`;
+};
+
+const criarTimestamp = (dataInput, hora) => {
+  if (!dataInput) return new Date().toISOString();
+  return new Date(`${dataInput}T${hora || horaAgora()}:00`).toISOString();
+};
+
+
 const dataHoje = () => {
   const d  = new Date();
   const dd = String(d.getDate()).padStart(2, "0");
@@ -481,6 +501,8 @@ const salvarCache = (refeicoes) => {
 //  COMPONENTE
 // ─────────────────────────────────────────────────────────────────────────────
 function KcalDiaria({ onClose }) {
+
+  const [dataRefeicaoTemp, setDataRefeicaoTemp] = useState(dataInputHoje);
   const navigate   = useNavigate();
   const isDesktop  = () => window.innerWidth >= 768;
 
@@ -556,7 +578,7 @@ function KcalDiaria({ onClose }) {
           // Normaliza formato vindo do Supabase
           const normalizadas = data.map((r) => ({
             id:        r.id,
-            nome:      r.nome,
+            nome:      r.nome_refeicao || r.nome || "Refeição",
             datad:     r.datad,
             hora:      r.hora,
             timestamp: r.timestamp,
@@ -672,57 +694,73 @@ function KcalDiaria({ onClose }) {
   //  CONFIRMAR REFEIÇÃO — salva LOCAL + SUPABASE imediatamente
   // ─────────────────────────────────────────────────────────────────────────
   const adicionarRefeicao = async () => {
-    if (itensTemp.length === 0) return;
+  if (itensTemp.length === 0) return;
 
-    const novaRefeicao = {
-      //id:        crypto.randomUUID(),
-      id:        generateId(),
-      nome:      nomeRefeicaoTemp.trim() || `Refeição ${refeicoes.length + 1}`,
-      datad:     dataHoje(),
-      hora:      horaAgora(),
-      timestamp: new Date().toISOString(),
-      itens:     itensTemp,
-    };
+  const datadSelecionada = inputParaDataBR(dataRefeicaoTemp);
+  const horaSelecionada = horaAgora();
+  const refeicaoEhDeHoje = datadSelecionada === dataHoje();
 
-    // 1. Estado React — instantâneo
-    setAnimandoTemp(true);
-    setTimeout(() => {
+  const novaRefeicao = {
+    id: generateId(),
+    nome: nomeRefeicaoTemp.trim() || `Refeição ${refeicaoEhDeHoje ? refeicoes.length + 1 : ""}`.trim(),
+    datad: datadSelecionada,
+    hora: horaSelecionada,
+    timestamp: criarTimestamp(dataRefeicaoTemp, horaSelecionada),
+    itens: itensTemp,
+  };
+
+  setAnimandoTemp(true);
+
+  setTimeout(() => {
+    if (refeicaoEhDeHoje) {
       setRefeicoes((prev) => {
         const novas = [...prev, novaRefeicao];
-
-        // 2. localStorage — síncrono
         salvarCache(novas);
-
         return novas;
       });
-      setItensTemp([]);
-      setNomeRefeicaoTemp("");
-      setAnimandoTemp(false);
-    }, 250);
-
-    // 3. Supabase — async, não bloqueia UI
-    if (user?.id) {
-      const totaisRef = calcularTotais([novaRefeicao]);
-      supabase
-        .from("refeicoes")
-        .insert({
-          id:         novaRefeicao.id,
-          user_id:    user.id,
-          nome_user:  userName,
-          datad:      novaRefeicao.datad,
-          hora:       novaRefeicao.hora,
-          timestamp:  novaRefeicao.timestamp,
-          nome_refeicao:novaRefeicao.nome,
-          itens:      novaRefeicao.itens,
-          kcal_total: totaisRef.kcal,
-          prot_total: totaisRef.proteina,
-          carb_total: totaisRef.carboidrato,
-        })
-        .then(({ error }) => {
-          if (error) console.warn("Falha ao salvar refeição no Supabase:", error.message);
-        });
     }
-  };
+
+    setItensTemp([]);
+    setNomeRefeicaoTemp("");
+    setDataRefeicaoTemp(dataInputHoje());
+    setAnimandoTemp(false);
+
+    if (!refeicaoEhDeHoje) {
+      mostrarNotificacao(`Refeição salva em ${datadSelecionada}`);
+      window.dispatchEvent(new Event("kcalAtualizada"));
+    }
+  }, 250);
+
+  if (user?.id) {
+    const totaisRef = calcularTotais([novaRefeicao]);
+
+    supabase
+      .from("refeicoes")
+      .insert({
+        id: novaRefeicao.id,
+        user_id: user.id,
+        nome_user: userName,
+        datad: novaRefeicao.datad,
+        hora: novaRefeicao.hora,
+        timestamp: novaRefeicao.timestamp,
+        nome_refeicao: novaRefeicao.nome,
+        itens: novaRefeicao.itens,
+        kcal_total: totaisRef.kcal,
+        prot_total: totaisRef.proteina,
+        carb_total: totaisRef.carboidrato,
+      })
+      .then(({ error }) => {
+        if (error) {
+          console.warn("Falha ao salvar refeição no Supabase:", error.message);
+          mostrarNotificacao("Erro ao salvar refeição.");
+          return;
+        }
+
+        window.dispatchEvent(new Event("kcalAtualizada"));
+      });
+  }
+};
+
 
   // ─────────────────────────────────────────────────────────────────────────
   //  EXCLUIR REFEIÇÃO — remove LOCAL + SUPABASE
@@ -837,23 +875,33 @@ function KcalDiaria({ onClose }) {
       {/* Refeição em montagem */}
       <div className={`refeicaoAtual ${animandoTemp ? "fadeOut" : ""}`}>
 
-        {editandoId === "temp" ? (
-          <input
-            className="tituloEditavel"
-            type="text"
-            autoFocus
-            placeholder="Nome da refeição..."
-            value={nomeRefeicaoTemp}
-            onChange={(e) => setNomeRefeicaoTemp(e.target.value)}
-            onBlur={()   => setEditandoId(null)}
-            onKeyDown={(e) => { if (e.key === "Enter") setEditandoId(null); }}
-          />
-        ) : (
-          <p className="tituloClicavel" onClick={() => setEditandoId("temp")}>
-            {nomeRefeicaoTemp.trim() || "Refeição atual"}{" "}
-            <span className="iconeLapis">✎</span>
-          </p>
-        )}
+        <div className="tituloDataRefeicao">
+  {editandoId === "temp" ? (
+    <input
+      className="tituloEditavel"
+      type="text"
+      autoFocus
+      placeholder="Nome da refeição..."
+      value={nomeRefeicaoTemp}
+      onChange={(e) => setNomeRefeicaoTemp(e.target.value)}
+      onBlur={() => setEditandoId(null)}
+      onKeyDown={(e) => { if (e.key === "Enter") setEditandoId(null); }}
+    />
+  ) : (
+    <p className="tituloClicavel" onClick={() => setEditandoId("temp")}>
+      {nomeRefeicaoTemp.trim() || "Refeição atual"}{" "}
+      <span className="iconeLapis">✎</span>
+    </p>
+  )}
+
+  <input
+    className="inputDataRefeicao"
+    type="date"
+    value={dataRefeicaoTemp}
+    onChange={(e) => setDataRefeicaoTemp(e.target.value)}
+  />
+</div>
+
 
         {itensTemp.map((item, index) => (
           <div key={index} className="item">
