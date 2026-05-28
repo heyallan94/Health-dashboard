@@ -14,6 +14,7 @@ import Distintivos from "../Distintivos/Distintivos";
 import Exercicio from "../Exercicio/Exercicio";
 import { useConexao } from "../../hooks/useConexao";
 import loadingPng from "../../assets/loading.png";
+import InstallButton from "../../components/InstallButton/InstallButton";
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  UTILITÁRIOS
@@ -512,9 +513,11 @@ function Home() {
         <div className="dashboard">
           <div className="desktopHeader">
             <span className="desktopNome">Olá, {nomeUsuario || "usuário"}</span>
+            
             <button className="btnLogout" onClick={handleLogout}>Sair</button>
+            
           </div>
-
+        <InstallButton />
           <div className="homeDistintivosArea">
             <Distintivos user={user} />
           </div>

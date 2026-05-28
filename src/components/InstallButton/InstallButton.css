@@ -1,0 +1,103 @@
+.wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 12px 0;
+}
+
+.button {
+  border: 1px solid rgba(59, 130, 246, 0.55);
+  border-radius: 14px;
+  padding: 11px 16px;
+  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.22);
+
+  transition:
+    transform 0.18s ease,
+    opacity 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.28);
+}
+
+.button:active {
+  transform: scale(0.98);
+}
+
+.iosBox {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+
+.iosText {
+  max-width: 360px;
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid #1a2640;
+  border-radius: 12px;
+  background: #0d1526;
+  color: #94a3b8;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.installBox {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 12px 0;
+}
+
+.installButton {
+  border: 1px solid rgba(59, 130, 246, 0.55);
+  border-radius: 14px;
+  padding: 11px 16px;
+  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.22);
+}
+
+.installButton:active {
+  transform: scale(0.97);
+}
+
+.installIosBox {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+
+.installIosBox p {
+  max-width: 360px;
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid #eeff00;
+  border-radius: 12px;
+  background: #0d1526;
+  color: #94a3b8;
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.installIosBox strong {
+  color: #e2e8f0;
+}

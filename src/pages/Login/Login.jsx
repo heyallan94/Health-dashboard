@@ -4,6 +4,7 @@ import { supabase } from "../../services/supabaseClient";
 import loadingImg from "../../assets/loading.png";
 import logoas     from "../../assets/logoas.png";
 import "./Login.css";
+import InstallButton from "../../components/InstallButton/InstallButton";
 
 function Login() {
   const navigate = useNavigate();
@@ -54,17 +55,20 @@ function Login() {
 
   return (
     <div className="loginPage">
-
+      
       {loading && (
         <div className="loadingOverlay">
           <img src={loadingImg} alt="loading" className="loadingSpinner" />
+          
         </div>
       )}
-
+    
       <div className="logoWrapper">
+        
         <img src={logoas} alt="Logo" className="logoImg" />
+        
       </div>
-
+      <InstallButton />
       <div className="loginCard">
 
         <input
