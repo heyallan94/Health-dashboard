@@ -357,7 +357,8 @@ function Calendario({ onClose }) {
   );
 
   const metaTotal = manutencaoKcal * diasConsolidados.length;
-  const saldoKcal = metaTotal - totalConsumido + totalQueimado;
+  const saldoKcal = metaTotal + totalQueimado - totalConsumido;
+  console.log(manutencaoKcal, totalConsumido, totalQueimado, saldoKcal)
   const massaKg = saldoKcal / 7700;
   const classeResultado = saldoKcal >= 0 ? "positivo" : "negativo";
 
@@ -456,7 +457,7 @@ function Calendario({ onClose }) {
 
           {totalQueimado > 0 && (
             <p className="caloriasExercicio">
-              🔥 Exercícios ajudaram em +{totalQueimado} kcal
+              🔥 Exercícios ajudaram em +{totalQueimado} kcal. 
             </p>
           )}
 
@@ -503,7 +504,15 @@ function Calendario({ onClose }) {
         </p>
       )}
 
-      <div className={`calendarioCarrosselShell ${dias.length === 1 ? "calendarioCarrosselShell--single" : ""}`}>
+      <div
+          className={`calendarioCarrosselShell ${
+            dias.length === 0
+              ? "calendarioCarrosselShell--empty"
+              : dias.length === 1
+                ? "calendarioCarrosselShell--single"
+                : ""
+          }`}
+        >
         {!isMobile && dias.length > 1 && (
           <button
             className="calArrow calArrow--left"

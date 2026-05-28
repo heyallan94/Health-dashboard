@@ -665,6 +665,22 @@
     display: none;
   }
 
+   .calendarioCarrosselShell--empty {
+    display: block;
+  }
+
+  .calendarioCarrosselShell--empty .calendarioCarrossel {
+    flex-direction: column;
+    overflow: visible;
+    padding: 0;
+    scroll-snap-type: none;
+  }
+
+  .calendarioCarrosselShell--empty .calendarioContainerSemFlex {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
   .cardDia {
     width: 270px;
     min-width: 270px;

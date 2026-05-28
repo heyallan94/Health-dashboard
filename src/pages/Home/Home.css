@@ -740,3 +740,103 @@ body {
       background-size: cover;
       background-position: center;
 }
+
+.loadingConexaoOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(3, 7, 18, 0.72);
+  backdrop-filter: blur(3px);
+}
+
+.loadingConexaoImg {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  animation: loadingConexaoSpin 0.9s linear infinite;
+}
+
+@keyframes loadingConexaoSpin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 767px) {
+  .loadingConexaoImg {
+    width: 58px;
+    height: 58px;
+  }
+
+}
+
+.semConexao {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-height: 100vh;
+  padding: 24px;
+  box-sizing: border-box;
+
+  text-align: center;
+  background: rgba(3, 7, 18, 0.92);
+  color: #e2e8f0;
+}
+
+.semConexao h2 {
+  margin: 0 0 8px;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.semConexao p {
+  max-width: 320px;
+  margin: 0 0 18px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #94a3b8;
+}
+
+.semConexao button {
+  border: 1px solid #3b82f6;
+  border-radius: 12px;
+  padding: 10px 16px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.semConexao button:active {
+  transform: scale(0.97);
+}
+
+@media (max-width: 767px) {
+  .semConexao {
+    min-height: 100dvh;
+    padding: 20px;
+  }
+
+  .semConexao h2 {
+    font-size: 22px;
+  }
+
+  .semConexao p {
+    font-size: 13px;
+  }
+}

@@ -12,6 +12,8 @@ import { supabase } from "../../services/supabaseClient";
 import SmartBanner from "../SmartBanner/SmartBanner";
 import Distintivos from "../Distintivos/Distintivos";
 import Exercicio from "../Exercicio/Exercicio";
+import { useConexao } from "../../hooks/useConexao";
+import loadingPng from "../../assets/loading.png";
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  UTILITÁRIOS
@@ -31,6 +33,8 @@ const planoEstaCompleto = (plano) => {
   const idade  = plano.idade  ?? plano.age    ?? null;
   return Boolean(altura && idade);
 };
+
+
 
 const CARDS = [
   { id: "kcal"       },
@@ -112,7 +116,8 @@ const avaliarCarboTreino = (carboAtual, peso) => {
 // ─────────────────────────────────────────────────────────────────────────────
 function Home() {
   const navigate = useNavigate();
-
+  const { conectado, verificando, verificarConexao } = useConexao();
+  const [checandoConexao, setChecandoConexao] = useState(false);
   const [user,    setUser]    = useState(null);
   const [fase,    setFase]    = useState("loading");
   const [visible, setVisible] = useState(false);
@@ -407,23 +412,37 @@ function Home() {
   }, []);
 
   // ── Navegação cards ────────────────────────────────────────────────────────
-  const handleCardClick = (cardId) => {
+  const handleCardClick = async (cardId) => {
+    setChecandoConexao(true);
+
+    const temConexao = await verificarConexao();
+
+    setChecandoConexao(false);
+
+    if (!temConexao) {
+      alert("Sem conexão. Verifique sua internet para continuar.");
+      return;
+    }
+
     if (!planoCriado && cardId !== "plano") {
       alert("Complete seu plano primeiro (altura e idade são obrigatórios)");
       return;
     }
+
     if (isDesktop()) {
       setAbaAtiva((prev) => (prev === cardId ? null : cardId));
       return;
     }
+
     const rotas = {
-      kcal:       "/home/kcaldiaria",
+      kcal: "/home/kcaldiaria",
       calendario: "/home/calendario",
-      plano:      "/home/plano",
-      metas:      "/home/metas",
-      agua:       "/home/agua",
-      exercicio:  "/home/exercicio",
+      plano: "/home/plano",
+      metas: "/home/metas",
+      agua: "/home/agua",
+      exercicio: "/home/exercicio",
     };
+
     if (rotas[cardId]) navigate(rotas[cardId]);
   };
 
@@ -441,11 +460,44 @@ function Home() {
   const metaAguaLitros = Math.round(metaAgua    / 100) / 10;
   const carboTreino    = avaliarCarboTreino(atualCarbo, pesoUsuario);
 
-  // ─────────────────────────────────────────────────────────────────────────
-  //  Render
-  // ─────────────────────────────────────────────────────────────────────────
+  if (verificando) {
+    return (
+      <div className="homeContainer">
+        <div className="loadingConexaoOverlay">
+          <img
+            src={loadingPng}
+            alt="Carregando"
+            className="loadingConexaoImg"
+          />
+        </div>
+      </div>
+    );
+  }
+
+    if (!conectado) {
+      return (
+        <div className="homeContainer">
+          <div className="semConexao">
+            <h2>Sem conexão</h2>
+            <p>Verifique sua internet para continuar.</p>
+            <button onClick={verificarConexao}>Tentar novamente</button>
+          </div>
+        </div>
+      );
+    }
   return (
     <div className="homeContainer">
+
+      {checandoConexao && (
+      <div className="loadingConexaoOverlay">
+        <img
+          src={loadingPng}
+          alt="Carregando"
+          className="loadingConexaoImg"
+        />
+      </div>
+      )}
+
       {fase === "loading" ? (
         <div className="loadingScreen">
           <h1 className={`welcome ${visible ? "show" : "hide"}`}>
