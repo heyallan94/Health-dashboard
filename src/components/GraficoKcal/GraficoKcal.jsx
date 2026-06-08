@@ -26,75 +26,174 @@ import { SupabaseClient } from "@supabase/supabase-js";
 // ─────────────────────────────────────────────────────────────────────────────
 //  Tooltip customizado
 // ─────────────────────────────────────────────────────────────────────────────
-const TooltipCustom = ({ active, payload, label, meta }) => {
-  if (!active || !payload || !payload.length) return null;
 
-  const kcal   = payload[0]?.value;
-  const diff   = kcal - meta;
-  const cor    = diff > 0 ? "#f87171" : "#4ade80";
-  const sinal  = diff > 0 ? "+" : "";
 
-  return (
-    <div className="graficoTooltip">
-      <p className="graficoTooltipData">{label}</p>
-      <p className="graficoTooltipKcal">{kcal} kcal</p>
-      <p className="graficoTooltipDiff" style={{ color: cor }}>
-        {sinal}{diff} em relação à meta
-      </p>
-    </div>
-  );
+ const dataBRParaTimestamp = (dataBR) => {
+  if (!dataBR) return 0;
+
+  const [dd, mm, yyyy] = dataBR.split("/").map(Number);
+
+  return new Date(yyyy, mm - 1, dd).getTime();
 };
+
+const createdAtParaDataBR = (createdAt) => {
+  if (!createdAt) return "";
+
+  const data = new Date(createdAt);
+  const dd = String(data.getDate()).padStart(2, "0");
+  const mm = String(data.getMonth() + 1).padStart(2, "0");
+  const yyyy = data.getFullYear();
+
+  return `${dd}/${mm}/${yyyy}`;
+};
+  const TooltipCustom = ({ active, payload, label, meta }) => {
+    if (!active || !payload || !payload.length) return null;
+
+    const ponto = payload[0]?.payload || {};
+    const kcalLiquida = Number(ponto.kcal || 0);
+    const kcalConsumida = Number(ponto.kcalConsumida || kcalLiquida);
+    const queimadas = Number(ponto.kcalQueimadas || 0);
+    const diferenca = Math.abs(kcalLiquida - meta);
+    const acimaDaMeta = kcalLiquida > meta;
+
+    return (
+      <div className="graficoTooltip">
+        <p className="graficoTooltipData">{label}</p>
+        <p className="graficoTooltipKcal">{kcalLiquida} kcal consumidas</p>
+
+        {queimadas > 0 && (
+          <p className="graficoTooltipQueimadas">
+            <span>🔥</span>
+            {queimadas} kcal queimadas em exercícios
+          </p>
+        )}
+
+        {queimadas > 0 && (
+          <p className="graficoTooltipOriginal">
+            {kcalConsumida} kcal antes dos exercícios
+          </p>
+        )}
+
+        <p
+          className="graficoTooltipDiff"
+          style={{ color: acimaDaMeta ? "#f87171" : "#4ade80" }}
+        >
+          {acimaDaMeta
+            ? `Superávit ${diferenca} calorias`
+            : `Déficit ${diferenca} calorias`}
+        </p>
+      </div>
+    );
+  };
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  Componente principal
 // ─────────────────────────────────────────────────────────────────────────────
 function GraficoKcal({ user }) {
-
+  const [kcalQueimadas, setKcalQueimadas] = useState(0);
+  const [totalQueimadas, settotalQueimadas] = useState(0);
   const [dados,     setDados]     = useState([]);
   const [carregando, setCarregando] = useState(true);
-  const [meta,      setMeta]      = useState(0);
+  const [meta, setMeta] = useState(null);
+  const metaGrafico = Number(meta || 0);
 
-  // Lê a meta do localStorage (já salva pelo MeuPlano)
   useEffect(() => {
-    const m = localStorage.getItem("metaKcal");
-    if (m) setMeta(Number(m));
-  }, []);
+    if (!user?.id) return;
 
-  // Busca os últimos 14 dias do Supabase
-  useEffect(() => {
-    if (!user) return;
-
-    const buscarHistorico = async () => {
-      setCarregando(true);
-
+    const buscarMeta = async () => {
       const { data, error } = await supabase
         .from("registros")
-        .select("data, total_kcal")
+        .select("manutencao_kcal")
         .eq("user_id", user.id)
-        .order("data", { ascending: true })
-        .limit(14);
+        .maybeSingle();
 
       if (error) {
-        //console.error("Erro ao buscar histórico:", error.message);
-        setCarregando(false);
+        console.warn("Erro ao buscar meta calórica:", error.message);
         return;
       }
 
-      // Converte dd/mm/yyyy → rótulo curto "dd/mm"
-      const formatado = (data || []).map((d) => {
-        const partes = d.data.split("/"); // ["dd", "mm", "yyyy"]
+      if (data?.manutencao_kcal) {
+        setMeta(Number(data.manutencao_kcal));
+      }
+    };
+
+    buscarMeta();
+  }, [user]);
+
+  // Busca os últimos 14 dias do Supabase
+ useEffect(() => {
+  if (!user?.id) return;
+
+  const buscarHistorico = async () => {
+    setCarregando(true);
+
+    const { data: refeicoesData, error: refeicoesError } = await supabase
+      .from("refeicoes")
+      .select("datad, kcal_total")
+      .eq("user_id", user.id)
+      .order("datad", { ascending: true });
+
+    if (refeicoesError) {
+      console.warn("Erro ao buscar refeições:", refeicoesError.message);
+      setCarregando(false);
+      return;
+    }
+
+    const { data: exerciciosData, error: exerciciosError } = await supabase
+      .from("gasto_calorico")
+      .select("created_at, kcal_final")
+      .eq("user_id", user.id);
+
+    if (exerciciosError) {
+      console.warn("Erro ao buscar kcal queimadas:", exerciciosError.message);
+    }
+
+    const porDia = {};
+
+    (refeicoesData || []).forEach((r) => {
+      if (!r.datad) return;
+
+      if (!porDia[r.datad]) porDia[r.datad] = 0;
+
+      porDia[r.datad] += Number(r.kcal_total || 0);
+    });
+
+    const queimadasPorDia = {};
+
+    (exerciciosData || []).forEach((r) => {
+      const dataBR = createdAtParaDataBR(r.created_at);
+
+      if (!dataBR) return;
+
+      if (!queimadasPorDia[dataBR]) queimadasPorDia[dataBR] = 0;
+
+      queimadasPorDia[dataBR] += Number(r.kcal_final || 0);
+    });
+
+    const formatado = Object.entries(porDia)
+      .sort(([dataA], [dataB]) => dataBRParaTimestamp(dataA) - dataBRParaTimestamp(dataB))
+      .slice(-31)
+      .map(([datad, kcal]) => {
+        const partes = datad.split("/");
+
+        const kcalQueimadas = queimadasPorDia[datad] || 0;
+        const kcalLiquida = Math.max(0, kcal - kcalQueimadas);
+
         return {
+          dataCompleta: datad,
           label: `${partes[0]}/${partes[1]}`,
-          kcal:  d.total_kcal,
+          kcal: kcalLiquida,
+          kcalConsumida: kcal,
+          kcalQueimadas,
         };
       });
 
-      setDados(formatado);
-      setCarregando(false);
-    };
+    setDados(formatado);
+    setCarregando(false);
+  };
 
-    buscarHistorico();
-  }, [user]);
+  buscarHistorico();
+}, [user]);
 
   // ── Render guard ──────────────────────────────────────────────────────────
   if (carregando) {
@@ -115,10 +214,12 @@ function GraficoKcal({ user }) {
     );
   }
 
+  const temKcalQueimadas = dados.some((d) => Number(d.kcalQueimadas || 0) > 0);
+
   // Domínio do eixo Y: um pouco abaixo do mínimo e acima do máximo
   const valores  = dados.map((d) => d.kcal);
-  const minValor = Math.min(...valores, meta);
-  const maxValor = Math.max(...valores, meta);
+  const minValor = Math.min(...valores, metaGrafico);
+  const maxValor = Math.max(...valores, metaGrafico);
   const padding  = Math.round((maxValor - minValor) * 0.2) || 200;
   const dominio  = [
     Math.max(0, minValor - padding),
@@ -133,9 +234,9 @@ function GraficoKcal({ user }) {
         <p className="graficoTitulo">Histórico calórico</p>
         <div className="graficoLegenda">
           <span className="graficoLegendaPonto amarelo" />
-          <span className="graficoLegendaTexto">kcal consumida</span>
+          <span className="graficoLegendaTexto">Kcal consumida</span>
           <span className="graficoLegendaPonto tracejado" />
-          <span className="graficoLegendaTexto">sua meta ({meta} kcal)</span>
+          <span className="graficoLegendaTexto">Taxa Manutenção kcal ({metaGrafico} kcal)</span>
         </div>
       </div>
 
@@ -170,13 +271,13 @@ function GraficoKcal({ user }) {
 
           {/* Tooltip */}
           <Tooltip
-            content={<TooltipCustom meta={meta} />}
+            content={<TooltipCustom meta={metaGrafico}/>}
             cursor={{ stroke: "#1e2d47", strokeWidth: 1 }}
           />
 
           {/* Linha de meta tracejada */}
           <ReferenceLine
-            y={meta}
+            y={metaGrafico}
             stroke="#facc15"
             strokeDasharray="6 3"
             strokeWidth={1.5}
