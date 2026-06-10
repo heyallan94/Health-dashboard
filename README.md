@@ -173,5 +173,4 @@ Upcoming features:
 * better dashboard analytics
 * progress insights
 * improved gamification
-* offline support
 * PWA support
