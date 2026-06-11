@@ -1,5 +1,7 @@
 # Health-dashboard
 
+https://heyallan94.github.io/Health-dashboard/
+
 Mobile-first fitness and nutrition tracking app built with React + Supabase.
 
 The project focuses on:
@@ -171,5 +173,4 @@ Upcoming features:
 * better dashboard analytics
 * progress insights
 * improved gamification
-* offline support
 * PWA support
