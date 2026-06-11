@@ -22,11 +22,22 @@ import {
 import { supabase } from "../../services/supabaseClient";
 import "./GraficoKcal.css";
 import { SupabaseClient } from "@supabase/supabase-js";
+import loadingImg from "../../assets/loading.png";
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  Tooltip customizado
 // ─────────────────────────────────────────────────────────────────────────────
 
+  const OPCOES_PERIODO = [7, 14, 21, 31, 60];
+
+const dataHojeBR = () => {
+  const data = new Date();
+  const dd = String(data.getDate()).padStart(2, "0");
+  const mm = String(data.getMonth() + 1).padStart(2, "0");
+  const yyyy = data.getFullYear();
+
+  return `${dd}/${mm}/${yyyy}`;
+};
 
  const dataBRParaTimestamp = (dataBR) => {
   if (!dataBR) return 0;
@@ -90,6 +101,8 @@ const createdAtParaDataBR = (createdAt) => {
 //  Componente principal
 // ─────────────────────────────────────────────────────────────────────────────
 function GraficoKcal({ user }) {
+  const [carregandoPeriodo, setCarregandoPeriodo] = useState(false);
+  const [periodoDias, setPeriodoDias] = useState(31);
   const [kcalQueimadas, setKcalQueimadas] = useState(0);
   const [totalQueimadas, settotalQueimadas] = useState(0);
   const [dados,     setDados]     = useState([]);
@@ -125,7 +138,9 @@ function GraficoKcal({ user }) {
   if (!user?.id) return;
 
   const buscarHistorico = async () => {
-    setCarregando(true);
+    if(!carregandoPeriodo){
+      setCarregando(true);
+    }
 
     const { data: refeicoesData, error: refeicoesError } = await supabase
       .from("refeicoes")
@@ -136,6 +151,7 @@ function GraficoKcal({ user }) {
     if (refeicoesError) {
       console.warn("Erro ao buscar refeições:", refeicoesError.message);
       setCarregando(false);
+      setCarregandoPeriodo(false);
       return;
     }
 
@@ -170,15 +186,16 @@ function GraficoKcal({ user }) {
       queimadasPorDia[dataBR] += Number(r.kcal_final || 0);
     });
 
+    const hojeTimestamp = dataBRParaTimestamp(dataHojeBR());
+
     const formatado = Object.entries(porDia)
       .sort(([dataA], [dataB]) => dataBRParaTimestamp(dataA) - dataBRParaTimestamp(dataB))
-      .slice(-31)
+      .filter(([datad]) => dataBRParaTimestamp(datad) < hojeTimestamp)
+      .slice(-periodoDias)
       .map(([datad, kcal]) => {
         const partes = datad.split("/");
-
         const kcalQueimadas = queimadasPorDia[datad] || 0;
         const kcalLiquida = Math.max(0, kcal - kcalQueimadas);
-
         return {
           dataCompleta: datad,
           label: `${partes[0]}/${partes[1]}`,
@@ -187,13 +204,13 @@ function GraficoKcal({ user }) {
           kcalQueimadas,
         };
       });
-
-    setDados(formatado);
-    setCarregando(false);
-  };
+      setDados(formatado);
+      setCarregando(false);
+      setCarregandoPeriodo(false);
+    };
 
   buscarHistorico();
-}, [user]);
+}, [user, periodoDias]);
 
   // ── Render guard ──────────────────────────────────────────────────────────
   if (carregando) {
@@ -238,7 +255,15 @@ function GraficoKcal({ user }) {
           <span className="graficoLegendaPonto tracejado" />
           <span className="graficoLegendaTexto">Taxa Manutenção kcal ({metaGrafico} kcal)</span>
         </div>
+        
       </div>
+
+      <div className="graficoChartArea">
+        {carregandoPeriodo && (
+          <div className="graficoLoadingPeriodo">
+            <img src={loadingImg} alt="Carregando" className="loadingConexaoImg" />
+          </div>
+      )}
 
       <ResponsiveContainer width="100%" height={220}>
         <LineChart
@@ -305,6 +330,28 @@ function GraficoKcal({ user }) {
           />
         </LineChart>
       </ResponsiveContainer>
+      </div>
+
+
+            <div className="graficoPeriodo">
+              <span className="graficoPeriodoLabel">Acompanhar</span>
+
+              <div className="graficoPeriodoOpcoes">
+                {OPCOES_PERIODO.map((dias) => (
+                  <button
+                    key={dias}
+                    type="button"
+                    className={`graficoPeriodoBotao ${periodoDias === dias ? "ativo" : ""}`}
+                    onClick={() => {
+                      if (periodoDias === dias) return;
+                      setCarregandoPeriodo(true);
+                      setPeriodoDias(dias);
+                    }}>{dias}d
+                  </button>
+                ))}
+              </div>
+            </div>
+
 
     </div>
   );

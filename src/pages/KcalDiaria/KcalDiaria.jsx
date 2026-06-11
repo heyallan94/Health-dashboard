@@ -88,8 +88,8 @@ const salvarCache = (refeicoes) => {
 //  COMPONENTE
 // ─────────────────────────────────────────────────────────────────────────────
 function KcalDiaria({ onClose }) {
-
-  const [mostrarPersonalizado, setMostrarPersonalizado] = useState(false);
+const tocandoSugestoesRef = useRef(false);
+const [mostrarPersonalizado, setMostrarPersonalizado] = useState(false);
 const [nomePersonalizado, setNomePersonalizado] = useState("");
 const [kcalPersonalizada, setKcalPersonalizada] = useState("");
 const [proteinaPersonalizada, setProteinaPersonalizada] = useState("");
@@ -146,6 +146,7 @@ const [proteinaPersonalizada, setProteinaPersonalizada] = useState("");
   const [busca,            setBusca]            = useState("");
   const [alimento,         setAlimento]         = useState("");
   const [quantidade,       setQuantidade]       = useState("");
+  const [tocandoSugestoes, setTocandoSugestoes] = useState(false);
   const [mostrarSugestoes, setMostrarSugestoes] = useState(false);
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -199,7 +200,7 @@ const [proteinaPersonalizada, setProteinaPersonalizada] = useState("");
   //  TOTAIS + ANIMAÇÃO DOS CONTADORES
   // ─────────────────────────────────────────────────────────────────────────
   const totais = useMemo(() => calcularTotais(refeicoes), [refeicoes]);
-
+  const [buscaMobileAberta, setBuscaMobileAberta] = useState(false);
   const animRef = useRef({ kcal: totais.kcal, proteina: totais.proteina, carbo: totais.carboidrato });
   const [kcalAnimada,     setKcalAnimada]     = useState(totais.kcal);
   const [proteinaAnimada, setProteinaAnimada] = useState(totais.proteina);
@@ -507,39 +508,60 @@ const excluirItemRefeicao = (refeicaoId, itemIndex) => {
         </p>
       </div>
 
-      {/* Autocomplete + quantidade + botão */}
       <div className="inputArea">
         <div className="autocompleteWrapper">
-          <input
-            type="text"
-            placeholder="Buscar alimento..."
-            value={busca}
-            autoComplete="off"
-            onChange={(e) => {
-              setBusca(e.target.value.replace(/[^a-zA-ZÀ-ú\s]/g, ""));
-              setAlimento("");
-            }}
-            onFocus={() => setMostrarSugestoes(true)}
-            onBlur={()  => setTimeout(() => setMostrarSugestoes(false), 150)}
-          />
+        <input
+          type="text"
+          placeholder="Buscar alimento..."
+          value={busca}
+          autoComplete="off"
+          readOnly={window.innerWidth < 768}
+          onClick={() => {
+            if (window.innerWidth < 768) {
+              setBuscaMobileAberta(true);
+              setMostrarSugestoes(false);
+            }
+          }}
+          onChange={(e) => {
+            setBusca(e.target.value.replace(/[^a-zA-ZÀ-ú\s]/g, ""));
+            setAlimento("");
+          }}
+          onFocus={() => {
+            if (window.innerWidth >= 768) setMostrarSugestoes(true);
+          }}
+          onBlur={() => {
+            setTimeout(() => {
+              if (!tocandoSugestoesRef.current) {
+                setMostrarSugestoes(false);
+              }
+            }, 300);
+          }}
+        />
 
-          {mostrarSugestoes && busca.length > 0 && alimentosFiltrados.length > 0 && (
-            <ul className="sugestoesList">
-              {alimentosFiltrados.slice(0, 8).map((key) => (
-                <li
-                  key={key}
-                  onMouseDown={() => {
-                    setAlimento(key);
-                    setBusca(formatarNome(key));
-                    setMostrarSugestoes(false);
-                  }}
-                >
-                  {formatarNome(key)}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+  {window.innerWidth >= 768 &&
+    mostrarSugestoes &&
+    busca.length > 0 &&
+    alimentosFiltrados.length > 0 && (
+      <ul className="sugestoesList">
+        {alimentosFiltrados.slice(0, 8).map((key) => (
+          <li
+            key={key}
+            onPointerDown={(e) => {
+              e.preventDefault();
+              setAlimento(key);
+              setBusca(formatarNome(key));
+              setMostrarSugestoes(false);
+            }}
+          >
+            {formatarNome(key)}
+          </li>
+        ))}
+      </ul>
+    )}
+</div>        
+      </div>
+
+      <div className="inputAreaQuantidadeAdicionar"> 
 
         <input
           className="tiposComida"
@@ -548,15 +570,17 @@ const excluirItemRefeicao = (refeicaoId, itemIndex) => {
           pattern="[0-9]*"
           placeholder={placeholderQtd()}
           value={quantidade}
+         // onBlur={() => {setTimeout(() => {if (!tocandoSugestoes) setMostrarSugestoes(false);}, 250);}}
           onChange={(e) => setQuantidade(e.target.value.replace(/\D/g, ""))}
         />
 
         <button className="btnAdicionar" onClick={handleAdd}>
-          Adicionar
+            Adicionar
         </button>
 
-        
       </div>
+      
+
 
       {mostrarPersonalizado && (
         <div className="personalizarAlimentoArea">
@@ -642,10 +666,11 @@ const excluirItemRefeicao = (refeicaoId, itemIndex) => {
               {item.tipo === "grama" ? "g" : item.tipo === "ml" ? "ml" : "un"})
             </span>
 
+          <div className="itemMacros">
             <span className="refeicaoAtualKcal">{item.kcal} Kcal</span>
             <span className="refeicaoAtualProteina">{item.proteina} G</span>
             <span className="refeicaoAtualCarbo">{item.carboidrato} C</span>
-
+          
             <button
               type="button"
               className="btnExcluirItem"
@@ -653,13 +678,14 @@ const excluirItemRefeicao = (refeicaoId, itemIndex) => {
             >
               Excluir Item
             </button>
+            </div>
           </div>
         ))}
 
         {itensTemp.length > 0 && (
           <div className="botoesRefeicao">
-            <button onClick={() => setItensTemp([])}>Excluir refeição</button>
-            <button onClick={adicionarRefeicao}>Adicionar refeição</button>
+            <button onClick={() => setItensTemp([])}>EXCLUIR</button>
+            <button onClick={adicionarRefeicao}>FINALIZAR</button>
           </div>
         )}
       </div>
@@ -729,15 +755,66 @@ const excluirItemRefeicao = (refeicaoId, itemIndex) => {
                   </div>
                 ))}
               </div>
-
-
             </div>
           );
         })}
       </div>
+
+        {buscaMobileAberta && (
+            <div className="buscaAlimentoOverlay">
+              <div className="buscaAlimentoSheet">
+                <div className="buscaAlimentoTopo">
+                  <input
+                    type="text"
+                    placeholder="Buscar alimento..."
+                    value={busca}
+                    autoFocus
+                    autoComplete="off"
+                    onChange={(e) => {
+                      setBusca(e.target.value.replace(/[^a-zA-ZÀ-ú\s]/g, ""));
+                      setAlimento("");
+                    }}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setBuscaMobileAberta(false)}
+                  >
+                    Fechar
+                  </button>
+                </div>
+
+                <div className="buscaAlimentoLista">
+                  {busca.length > 0 &&
+                    alimentosFiltrados.slice(0, 60).map((key) => (
+                      <button
+                        key={key}
+                        type="button"
+                        className="buscaAlimentoItem"
+                        onClick={() => {
+                          setAlimento(key);
+                          setBusca(formatarNome(key));
+                          setBuscaMobileAberta(false);
+                          setMostrarSugestoes(false);
+                        }}
+                      >
+                        {formatarNome(key)}
+                      </button>
+                    ))}
+
+                  {busca.length > 0 && alimentosFiltrados.length === 0 && (
+                    <p className="buscaAlimentoVazio">Nenhum alimento encontrado</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
 
     </div>
   );
 }
 
 export default KcalDiaria;
+
+//1006

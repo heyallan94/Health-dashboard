@@ -103,7 +103,7 @@ function Login() {
             | Esqueci a senha
           </button>
         </div>
-        <div className="version">v0.060626</div>
+        <div className="version">v0.100626</div>
       </div>
     </div>
   );
