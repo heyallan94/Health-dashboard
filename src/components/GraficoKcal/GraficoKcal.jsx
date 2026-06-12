@@ -28,7 +28,10 @@ import loadingImg from "../../assets/loading.png";
 //  Tooltip customizado
 // ─────────────────────────────────────────────────────────────────────────────
 
-  const OPCOES_PERIODO = [7, 14, 21, 31, 60];
+const OPCOES_PERIODO = [7, 14, 21, 31, 60];
+
+const formatarNumeroBR = (valor) =>
+  Math.round(Number(valor || 0)).toLocaleString("pt-BR");
 
 const dataHojeBR = () => {
   const data = new Date();
@@ -57,42 +60,46 @@ const createdAtParaDataBR = (createdAt) => {
 
   return `${dd}/${mm}/${yyyy}`;
 };
-  const TooltipCustom = ({ active, payload, label, meta }) => {
+  const TooltipCustom = ({ active, payload, label, meta, tipoGrafico }) => {
     if (!active || !payload || !payload.length) return null;
 
     const ponto = payload[0]?.payload || {};
-    const kcalLiquida = Number(ponto.kcal || 0);
-    const kcalConsumida = Number(ponto.kcalConsumida || kcalLiquida);
+    const graficoEhProteina = tipoGrafico === "proteina";
+    const valor = graficoEhProteina ? Number(ponto.proteina || 0): Number(ponto.kcal || 0);
+
+    //const kcalLiquida = Number(ponto.kcal || 0);
+    const kcalConsumida = Number(ponto.kcalConsumida || ponto.kcal || 0);
     const queimadas = Number(ponto.kcalQueimadas || 0);
-    const diferenca = Math.abs(kcalLiquida - meta);
-    const acimaDaMeta = kcalLiquida > meta;
+    const diferenca = Math.abs(valor - meta);
+    const acimaDaMeta = valor > meta;
 
     return (
       <div className="graficoTooltip">
         <p className="graficoTooltipData">{label}</p>
-        <p className="graficoTooltipKcal">{kcalLiquida} kcal consumidas</p>
-
-        {queimadas > 0 && (
+        <p className="graficoTooltipKcal">{graficoEhProteina ? `${formatarNumeroBR(valor)}g` : `${formatarNumeroBR(valor)} kcal consumidas`}</p>
+        {!graficoEhProteina && queimadas > 0 && (
           <p className="graficoTooltipQueimadas">
             <span>🔥</span>
             {queimadas} kcal queimadas em exercícios
           </p>
         )}
 
-        {queimadas > 0 && (
+        {!graficoEhProteina && queimadas > 0 && (
           <p className="graficoTooltipOriginal">
             {kcalConsumida} kcal antes dos exercícios
           </p>
         )}
 
-        <p
-          className="graficoTooltipDiff"
-          style={{ color: acimaDaMeta ? "#f87171" : "#4ade80" }}
-        >
-          {acimaDaMeta
-            ? `Superávit ${diferenca} calorias`
-            : `Déficit ${diferenca} calorias`}
-        </p>
+        {!graficoEhProteina && (
+          <p
+            className="graficoTooltipDiff"
+            style={{ color: acimaDaMeta ? "#facc15" : "#4ade80" }}
+          >
+            {acimaDaMeta
+              ? `Superávit ${diferenca} calorias`
+              : `Déficit ${diferenca} calorias`}
+          </p>
+        )}
       </div>
     );
   };
@@ -107,8 +114,11 @@ function GraficoKcal({ user }) {
   const [totalQueimadas, settotalQueimadas] = useState(0);
   const [dados,     setDados]     = useState([]);
   const [carregando, setCarregando] = useState(true);
-  const [meta, setMeta] = useState(null);
-  const metaGrafico = Number(meta || 0);
+  const [metaKcal, setMetaKcal] = useState(null);
+  const [metaProteina, setMetaProteina] = useState(null);
+  const [tipoGrafico, setTipoGrafico] = useState("kcal");
+  const metaGrafico = Number(tipoGrafico === "kcal" ? metaKcal || 0 : metaProteina || 0);
+  const graficoEhProteina = tipoGrafico === "proteina";
 
   useEffect(() => {
     if (!user?.id) return;
@@ -116,17 +126,20 @@ function GraficoKcal({ user }) {
     const buscarMeta = async () => {
       const { data, error } = await supabase
         .from("registros")
-        .select("manutencao_kcal")
+        .select("manutencao_kcal, metaproteina")
         .eq("user_id", user.id)
         .maybeSingle();
 
       if (error) {
-        console.warn("Erro ao buscar meta calórica:", error.message);
+        console.warn("Erro ao buscar metas:", error.message);
         return;
       }
 
       if (data?.manutencao_kcal) {
-        setMeta(Number(data.manutencao_kcal));
+        setMetaKcal(Number(data.manutencao_kcal));
+      }
+      if (data?.metaproteina) {
+        setMetaProteina(Number(data.metaproteina));
       }
     };
 
@@ -144,7 +157,7 @@ function GraficoKcal({ user }) {
 
     const { data: refeicoesData, error: refeicoesError } = await supabase
       .from("refeicoes")
-      .select("datad, kcal_total")
+      .select("datad, kcal_total, prot_total")
       .eq("user_id", user.id)
       .order("datad", { ascending: true });
 
@@ -165,13 +178,16 @@ function GraficoKcal({ user }) {
     }
 
     const porDia = {};
+    const proteinaPorDia = {};
 
     (refeicoesData || []).forEach((r) => {
       if (!r.datad) return;
 
       if (!porDia[r.datad]) porDia[r.datad] = 0;
+      if (!proteinaPorDia[r.datad]) proteinaPorDia[r.datad] = 0;
 
       porDia[r.datad] += Number(r.kcal_total || 0);
+      proteinaPorDia[r.datad] += Number(r.prot_total || 0);
     });
 
     const queimadasPorDia = {};
@@ -188,6 +204,9 @@ function GraficoKcal({ user }) {
 
     const hojeTimestamp = dataBRParaTimestamp(dataHojeBR());
 
+    const formatarNumeroBR = (valor) =>
+    Math.round(Number(valor || 0)).toLocaleString("pt-BR");
+
     const formatado = Object.entries(porDia)
       .sort(([dataA], [dataB]) => dataBRParaTimestamp(dataA) - dataBRParaTimestamp(dataB))
       .filter(([datad]) => dataBRParaTimestamp(datad) < hojeTimestamp)
@@ -202,6 +221,7 @@ function GraficoKcal({ user }) {
           kcal: kcalLiquida,
           kcalConsumida: kcal,
           kcalQueimadas,
+          proteina: proteinaPorDia[datad] || 0,
         };
       });
       setDados(formatado);
@@ -234,7 +254,17 @@ function GraficoKcal({ user }) {
   const temKcalQueimadas = dados.some((d) => Number(d.kcalQueimadas || 0) > 0);
 
   // Domínio do eixo Y: um pouco abaixo do mínimo e acima do máximo
-  const valores  = dados.map((d) => d.kcal);
+  const valores = dados.map((d) =>  Number(graficoEhProteina ? d.proteina : d.kcal) || 0);
+  const totalKcalPeriodo = dados.reduce((acc, d) => acc + Number(d.kcal || 0), 0);
+  const totalProteinaPeriodo = dados.reduce((acc, d) => acc + Number(d.proteina || 0), 0);
+
+  const metaKcalPeriodo = metaKcal * dados.length;
+  const saldoKcalPeriodo = Math.round(totalKcalPeriodo - metaKcalPeriodo);
+  const saldoKcalAbsoluto = Math.abs(saldoKcalPeriodo);
+
+  const resultadoEhSuperavit = saldoKcalPeriodo > 0;
+  const mediaProteinaPeriodo = dados.length > 0 ? totalProteinaPeriodo / dados.length : 0;
+
   const minValor = Math.min(...valores, metaGrafico);
   const maxValor = Math.max(...valores, metaGrafico);
   const padding  = Math.round((maxValor - minValor) * 0.2) || 200;
@@ -248,13 +278,35 @@ function GraficoKcal({ user }) {
     <div className="graficoWrapper">
 
       <div className="graficoTopo">
-        <p className="graficoTitulo">Histórico calórico</p>
-        <div className="graficoLegenda">
-          <span className="graficoLegendaPonto amarelo" />
-          <span className="graficoLegendaTexto">Kcal consumida</span>
-          <span className="graficoLegendaPonto tracejado" />
-          <span className="graficoLegendaTexto">Taxa Manutenção kcal ({metaGrafico} kcal)</span>
+        <div className="graficoTituloLinha">
+          <p className="graficoTitulo">
+            {graficoEhProteina ? "Histórico de Proteína" : "Histórico calórico"}
+          </p>
+
+          {graficoEhProteina ? (
+            <span className="graficoResultadoTitulo proteina">
+              Média de Proteína: {formatarNumeroBR(mediaProteinaPeriodo)}g/dia
+            </span>
+          ) : (
+            <span
+                className={`graficoResultadoTitulo kcal ${
+                  resultadoEhSuperavit ? "superavit" : "deficit"
+                }`}
+              >
+                {resultadoEhSuperavit ? "+" : "-"}
+                {formatarNumeroBR(saldoKcalAbsoluto)}Kcal{" "}
+                {resultadoEhSuperavit ? "Superávit" : "Déficit"}
+              </span>
+          )}
         </div>
+
+        <div className="graficoLegenda">
+          <span className={`graficoLegendaPonto ${graficoEhProteina ? "verde" : "amarelo"}`} />
+          <span className="graficoLegendaTexto">{graficoEhProteina ? "Proteína consumida" : "Kcal consumida"}</span>
+          <span className="graficoLegendaPonto tracejado" />
+          <span className="graficoLegendaTexto">{graficoEhProteina ? `Taxa proteína (${metaGrafico}g)` : `Taxa Manutenção kcal (${metaGrafico} kcal)`}</span>
+        
+      </div>
         
       </div>
 
@@ -296,7 +348,7 @@ function GraficoKcal({ user }) {
 
           {/* Tooltip */}
           <Tooltip
-            content={<TooltipCustom meta={metaGrafico}/>}
+            content={<TooltipCustom meta={metaGrafico} tipoGrafico={tipoGrafico} />}
             cursor={{ stroke: "#1e2d47", strokeWidth: 1 }}
           />
 
@@ -312,22 +364,23 @@ function GraficoKcal({ user }) {
           {/* Linha de kcal real */}
           <Line
             type="monotone"
-            dataKey="kcal"
-            stroke="#3b82f6"
+            dataKey={graficoEhProteina ? "proteina" : "kcal"}
+            stroke={graficoEhProteina ? "#22c55e" : "#3b82f6"}
             strokeWidth={2}
             dot={{
               r: 4,
-              fill: "#3b82f6",
+              fill: graficoEhProteina ? "#22c55e" : "#3b82f6",
               stroke: "#080e1a",
               strokeWidth: 2,
             }}
             activeDot={{
               r: 6,
-              fill: "#60a5fa",
+              fill: graficoEhProteina ? "#4ade80" : "#60a5fa",
               stroke: "#080e1a",
               strokeWidth: 2,
             }}
           />
+
         </LineChart>
       </ResponsiveContainer>
       </div>
@@ -350,6 +403,24 @@ function GraficoKcal({ user }) {
                   </button>
                 ))}
               </div>
+            </div>  
+            
+            <div className="graficoTipoSwitch">
+              <button
+                type="button"
+                className={`graficoTipoBotao ${tipoGrafico === "kcal" ? "ativo" : ""}`}
+                onClick={() => setTipoGrafico("kcal")}
+              >
+                Calorias
+              </button>
+
+              <button
+                type="button"
+                className={`graficoTipoBotao ${tipoGrafico === "proteina" ? "ativo proteina" : ""}`}
+                onClick={() => setTipoGrafico("proteina")}
+              >
+                Proteínas
+              </button>
             </div>
 
 

@@ -262,17 +262,25 @@
 }
 
 /* ── Área alimento personalizado ─────────────────────────────────────────── */
-.personalizarAlimentoArea {
-  display: grid;
-  grid-template-columns: 1.4fr 0.7fr 0.7fr auto;
-  gap: 10px;
+.personalizarAlimentoAreaGeral {
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  gap: 12px;
   margin-bottom: 14px;
   padding: 14px;
   border: 1px solid #1a2640;
   border-radius: 14px;
   background: #0d1526;
   animation: abrirPersonalizado 0.2s ease;
+}
+
+.personalizarAlimentoArea {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 0.65fr;
+  gap: 10px;
+  align-items: center;
 }
 
 .personalizarAlimentoArea input {
@@ -295,28 +303,33 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
 }
 
-.personalizarAlimentoArea input::placeholder { color: #334155; }
+.personalizarAlimentoArea input::placeholder {
+  color: #334155;
+}
 
 .btnAdicionarPersonalizado {
+  width: min(100%, 260px);
   height: 42px;
   padding: 0 14px;
   border: none;
   border-radius: 9px;
-  background: #16a34a;
-  color: #fff;
+  background: #facc15;
+  color: #111827;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 800;
   white-space: nowrap;
   cursor: pointer;
   transition: background 0.18s, transform 0.18s;
 }
 
 .btnAdicionarPersonalizado:hover {
-  background: #15803d;
+  background: #eab308;
   transform: translateY(-1px);
 }
 
-.btnAdicionarPersonalizado:active { transform: scale(0.97); }
+.btnAdicionarPersonalizado:active {
+  transform: scale(0.97);
+}
 
 @keyframes abrirPersonalizado {
   from { opacity: 0; transform: translateY(-6px); }
@@ -776,9 +789,6 @@
 
   .contador       { font-size: 24px; padding: 20px 16px; }
 
-  .personalizarAlimentoArea {
-    grid-template-columns: 1.4fr 0.7fr 0.7fr auto;
-  }
 }
 
 /* ── Mobile ajustes ──────────────────────────────────────────────────────── */
@@ -959,4 +969,91 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+@media (max-width: 420px) {
+  .personalizarAlimentoArea {
+    grid-template-columns: 1fr;
+  }
+
+  .btnAdicionarPersonalizado {
+    width: 100%;
+  }
+}
+
+@keyframes abrirPersonalizado {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.graficoLegendaPonto.verde {
+  background: #22c55e;
+}
+
+.graficoTipoSwitch {
+  display: flex;
+  gap: 6px;
+  margin: 0 0 12px;
+}
+
+.graficoTipoBotao {
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 6px;
+  background: transparent;
+  color: #ffffff;
+  font-size: 0.74rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.graficoTipoBotao.ativo {
+  border-color: #f59e0b;
+  background: #facc15;
+  color: #111827;
+}
+
+.graficoTipoBotao.ativo.proteina {
+  border-color: #22c55e;
+  background: #22c55e;
+  color: #06130b;
+}
+
+.graficoTituloLinha {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.graficoResultadoTitulo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.graficoResultadoTitulo.superavit {
+  background: rgba(250, 204, 21, 0.14);
+  color: #facc15;
+  border: 1px solid rgba(250, 204, 21, 0.28);
+}
+
+.graficoResultadoTitulo.deficit,
+.graficoResultadoTitulo.proteina {
+  background: rgba(74, 222, 128, 0.12);
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.26);
 }

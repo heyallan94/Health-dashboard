@@ -504,7 +504,7 @@ const excluirItemRefeicao = (refeicaoId, itemIndex) => {
 
       <div className="finalizarDia">
         <p className="autoSaveInfo">
-          Cada refeição é salva automaticamente assim que adicionada.
+          Adicione sua refeição de acordo com nossa base de alimentos!
         </p>
       </div>
 
@@ -581,33 +581,39 @@ const excluirItemRefeicao = (refeicaoId, itemIndex) => {
       </div>
       
 
-
+      <p className="autoSaveInfo">
+          Adicione sua refeição de acordo com nossa base de alimentos!
+        </p>
       {mostrarPersonalizado && (
-        <div className="personalizarAlimentoArea">
-          <input
-            type="text"
-            placeholder="Nome do alimento"
-            value={nomePersonalizado}
-            onChange={(e) => setNomePersonalizado(e.target.value)}
-          />
+        <div className="personalizarAlimentoAreaGeral">
+          <div className="personalizarAlimentoArea">
+            <input
+              type="text"
+              placeholder="Nome do alimento"
+              value={nomePersonalizado}
+              onChange={(e) => setNomePersonalizado(e.target.value)}
+            />
 
-          <input
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            placeholder="Kcal"
-            value={kcalPersonalizada}
-            onChange={(e) => setKcalPersonalizada(e.target.value.replace(/\D/g, ""))}
-          />
 
-          <input
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            placeholder="Proteínas"
-            value={proteinaPersonalizada}
-            onChange={(e) => setProteinaPersonalizada(e.target.value.replace(/\D/g, ""))}
-          />
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              placeholder="Kcal"
+              value={kcalPersonalizada}
+              onChange={(e) => setKcalPersonalizada(e.target.value.replace(/\D/g, ""))}
+            />
+
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              placeholder="Proteínas"
+              value={proteinaPersonalizada}
+              onChange={(e) => setProteinaPersonalizada(e.target.value.replace(/\D/g, ""))}
+            />
+
+          </div>
 
           <button
             type="button"
@@ -617,6 +623,10 @@ const excluirItemRefeicao = (refeicaoId, itemIndex) => {
             Adicionar personalizado
           </button>
         </div>
+
+        
+
+
       )}
 
       
