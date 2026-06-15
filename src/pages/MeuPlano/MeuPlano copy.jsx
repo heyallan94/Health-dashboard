@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import "./meuplano.css";
 import { supabase } from "../../services/supabaseClient";
 
+// ─────────────────────────────────────────────────────────────────────────────
+//  OBJETIVOS
+// ─────────────────────────────────────────────────────────────────────────────
 const OBJETIVOS = {
   cutting: {
     label:         "Cutting",
@@ -33,6 +36,9 @@ const OBJETIVOS = {
   },
 };
 
+// ─────────────────────────────────────────────────────────────────────────────
+//  PARECER CORPORAL — frases por cenário
+// ─────────────────────────────────────────────────────────────────────────────
 const PARECERES = {
   atletico: {
     cor:   "azul",
@@ -104,9 +110,13 @@ const PARECERES = {
 
 const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
+// ─────────────────────────────────────────────────────────────────────────────
+//  LÓGICA DE PARECER
+// ─────────────────────────────────────────────────────────────────────────────
 function calcularParecer(imc, gordura, sexo) {
   const n = Number(imc);
 
+  // Se tem percentual de gordura, usa ele para afinar
   if (gordura !== "" && gordura !== null && gordura !== undefined) {
     const g = Number(gordura);
     const limiteAtletico  = sexo === "masculino" ? 15 : 22;
@@ -121,6 +131,7 @@ function calcularParecer(imc, gordura, sexo) {
     return PARECERES.obesidade;
   }
 
+  // Sem gordura: usa IMC
   if (n < 18.5) return PARECERES.abaixo;
   if (n < 25)   return PARECERES.saudavel;
   if (n < 30)   return PARECERES.atencao;
@@ -128,6 +139,9 @@ function calcularParecer(imc, gordura, sexo) {
   return PARECERES.obesidade;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+//  HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
 function getImcTexto(imc) {
   const n = Number(imc);
   return n < 18.5 ? "Abaixo do peso" :
@@ -136,36 +150,22 @@ function getImcTexto(imc) {
 }
 
 function normalizarPlano(raw) {
-  const imc        = Number(raw.imc);
-  const imcTexto   = raw.imcTexto || getImcTexto(imc);
-  const metaKcal   = raw.metaKcal  ?? raw.metakcal;
-  const proteina   = raw.proteina  ?? raw.metaproteina;
-  const manutencao = raw.manutencao ?? raw.manutencao_kcal;
-  const gordura    = raw.gordura    ?? raw.percentual_gordura;
-  const parecerCor    = raw.parecerCor    ?? raw.parecer_cor;
-  const parecerLabel  = raw.parecerLabel  ?? raw.parecer_label;
-  const parecerFrase  = raw.parecerFrase  ?? raw.parecer_corporal;
-  const data = raw.data ?? (raw.created_at
+  const imc      = Number(raw.imc);
+  const imcTexto = raw.imcTexto || getImcTexto(imc);
+  const metaKcal = raw.metaKcal  ?? raw.metakcal;
+  const proteina = raw.proteina  ?? raw.metaproteina;
+  const data     = raw.data ?? (raw.created_at
     ? new Date(raw.created_at).toLocaleDateString("pt-BR")
     : "—");
 
-  return {
-    ...raw,
-    imc: isNaN(imc) ? "0.0" : imc.toFixed(1),
-    imcTexto,
-    metaKcal,
-    proteina,
-    manutencao,
-    gordura,
-    parecerCor,
-    parecerLabel,
-    parecerFrase,
-    data,
-  };
+  return { ...raw, imc: imc.toFixed(1), imcTexto, metaKcal, proteina, data };
 }
 
 const isDesktop = () => window.innerWidth >= 768;
 
+// ─────────────────────────────────────────────────────────────────────────────
+//  COMPONENTE
+// ─────────────────────────────────────────────────────────────────────────────
 function MeuPlano({ onClose }) {
   const [user,       setUser]       = useState(null);
   const [etapa,      setEtapa]      = useState(1);
@@ -173,7 +173,7 @@ function MeuPlano({ onClose }) {
   const [altura,     setAltura]     = useState("");
   const [idade,      setIdade]      = useState("");
   const [sexo,       setSexo]       = useState("");
-  const [gordura,    setGordura]    = useState("");
+  const [gordura,    setGordura]    = useState(""); // opcional
   const [objetivo,   setObjetivo]   = useState("");
   const [resultado,  setResultado]  = useState(null);
   const [registro,   setRegistro]   = useState(null);
@@ -181,49 +181,51 @@ function MeuPlano({ onClose }) {
 
   const navigate = useNavigate();
 
+  // ── Auth ──────────────────────────────────────────────────────────────────
   useEffect(() => {
-    const init = async () => {
-      try {
-        const { data: authData } = await supabase.auth.getUser();
-        const currentUser = authData?.user || null;
-        setUser(currentUser);
-
-        if (currentUser) {
-          const { data, error } = await supabase
-            .from("registros")
-            .select("*")
-            .eq("user_id", currentUser.id)
-            .maybeSingle();
-
-          if (data && !error) {
-            const plano = normalizarPlano(data);
-            setRegistro(plano);
-            localStorage.setItem("meuPlano", JSON.stringify(plano));
-            setCarregando(false);
-            return;
-          }
-
-          localStorage.removeItem("meuPlano");
-          localStorage.removeItem("metaKcal");
-          localStorage.removeItem("metaProteina");
-          setCarregando(false);
-          return;
-        }
-
-        const raw = JSON.parse(localStorage.getItem("meuPlano"));
-        if (raw?.metaKcal && raw?.proteina && raw?.imcTexto) {
-          setRegistro(raw);
-        }
-
-        setCarregando(false);
-      } catch {
-        setCarregando(false);
-      }
-    };
-
-    init();
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) setUser(data.user);
+    });
   }, []);
 
+  // ── Carrega plano ─────────────────────────────────────────────────────────
+  useEffect(() => {
+    const carregarPlano = async () => {
+      // 1. Tenta localStorage
+      const raw = JSON.parse(localStorage.getItem("meuPlano"));
+      if (raw?.metaKcal && raw?.proteina && raw?.imcTexto) {
+        setRegistro(raw);
+        setCarregando(false);
+        return;
+      }
+      if (raw) localStorage.removeItem("meuPlano");
+
+      // 2. Sem user, para aqui — mostra formulário
+      if (!user) {
+        setCarregando(false);
+        return;
+      }
+
+      // 3. Busca no Supabase
+      const { data, error } = await supabase
+        .from("registros")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (data && !error) {
+        const plano = normalizarPlano(data);
+        setRegistro(plano);
+        localStorage.setItem("meuPlano", JSON.stringify(plano));
+      }
+
+      setCarregando(false);
+    };
+
+    carregarPlano();
+  }, [user]);
+
+  // ── Avança etapa 1 → 2 ───────────────────────────────────────────────────
   const handleAvancar = () => {
     if (!peso || !altura || !idade || !sexo) {
       alert("Preencha todos os campos obrigatórios antes de continuar.");
@@ -240,6 +242,7 @@ function MeuPlano({ onClose }) {
     setEtapa(2);
   };
 
+  // ── Calcula resultado ────────────────────────────────────────────────────
   const handleCalcular = (obj) => {
     setObjetivo(obj);
 
@@ -252,10 +255,12 @@ function MeuPlano({ onClose }) {
     let metodoCalculo;
 
     if (g !== null) {
+      // Katch-McArdle: usa massa magra
       const massaMagra = p * (1 - g / 100);
       tmb = Math.round(370 + 21.6 * massaMagra);
       metodoCalculo = "katch-mcArdle";
     } else {
+      // Mifflin-St Jeor
       tmb = sexo === "masculino"
         ? 10 * p + 6.25 * a - 5 * i + 5
         : 10 * p + 6.25 * a - 5 * i - 161;
@@ -296,6 +301,7 @@ function MeuPlano({ onClose }) {
     setEtapa(3);
   };
 
+  // ── Salva plano ───────────────────────────────────────────────────────────
   const handleRegistrar = async () => {
     if (!resultado) return;
 
@@ -351,7 +357,7 @@ function MeuPlano({ onClose }) {
         );
 
       if (error) {
-        console.warn(error);
+        console.log(error);
         alert("Erro ao salvar no Supabase");
         return;
       }
@@ -365,6 +371,7 @@ function MeuPlano({ onClose }) {
     window.dispatchEvent(new Event("planoCriado"));
   };
 
+  // ── Reset ─────────────────────────────────────────────────────────────────
   const handleReset = () => {
     localStorage.removeItem("meuPlano");
     localStorage.removeItem("metaKcal");
@@ -380,6 +387,9 @@ function MeuPlano({ onClose }) {
     setObjetivo("");
   };
 
+  // ─────────────────────────────────────────────────────────────────────────
+  //  LOADING
+  // ─────────────────────────────────────────────────────────────────────────
   if (carregando) return (
     <div className="planoContainer planoCarregando">
       <div className="planoSpinner" />
@@ -387,6 +397,9 @@ function MeuPlano({ onClose }) {
     </div>
   );
 
+  // ─────────────────────────────────────────────────────────────────────────
+  //  PLANO SALVO — exibe resultados
+  // ─────────────────────────────────────────────────────────────────────────
   if (registro) {
     const cfg         = OBJETIVOS[registro.objetivo];
     const parecerCor  = registro.parecerCor  || "verde";
@@ -404,6 +417,7 @@ function MeuPlano({ onClose }) {
           ← Voltar
         </button>
 
+        {/* Card principal do objetivo */}
         <div className="planoCard registrado">
 
           <div className="planoCardTopo" style={{ borderColor: cfg?.cor }}>
@@ -443,6 +457,7 @@ function MeuPlano({ onClose }) {
             )}
           </div>
 
+          {/* Manutenção */}
           <div className="planoManutencaoBox">
             <p className="planoManutencaoTexto">
               Consumindo aproximadamente <strong>{registro.manutencao} kcal/dia</strong> você
@@ -466,6 +481,7 @@ function MeuPlano({ onClose }) {
 
         </div>
 
+        {/* Card de parecer corporal */}
         {parecerFrase && (
           <div className={`planoParecer parecer-${parecerCor}`}>
             <div className="planoParecerTopo">
@@ -483,6 +499,9 @@ function MeuPlano({ onClose }) {
     );
   }
 
+  // ─────────────────────────────────────────────────────────────────────────
+  //  WIZARD — sem plano salvo
+  // ─────────────────────────────────────────────────────────────────────────
   return (
     <div className="planoContainer">
 
@@ -494,12 +513,14 @@ function MeuPlano({ onClose }) {
         ← Voltar
       </button>
 
+      {/* Indicador de etapa */}
       <div className="planoEtapas">
         {[1, 2, 3].map((n) => (
           <div key={n} className={`planoEtapaDot ${etapa >= n ? "ativa" : ""}`} />
         ))}
       </div>
 
+      {/* ── ETAPA 1: dados físicos ── */}
       {etapa === 1 && (
         <div className="planoEtapaBox">
 
@@ -552,6 +573,7 @@ function MeuPlano({ onClose }) {
               </div>
             </div>
 
+            {/* % gordura — opcional */}
             <div className="planoInputGroup">
               <label>
                 % Gordura corporal{" "}
@@ -596,6 +618,7 @@ function MeuPlano({ onClose }) {
         </div>
       )}
 
+      {/* ── ETAPA 2: objetivo ── */}
       {etapa === 2 && (
         <div className="planoEtapaBox">
 
@@ -629,6 +652,7 @@ function MeuPlano({ onClose }) {
         </div>
       )}
 
+      {/* ── ETAPA 3: resultado ── */}
       {etapa === 3 && resultado && (
         <div className="planoEtapaBox">
 
@@ -639,6 +663,7 @@ function MeuPlano({ onClose }) {
           <h2 className="planoTitulo">Seu plano está pronto</h2>
           <p className="planoSubtitulo">{resultado.config.descricao}</p>
 
+          {/* Grid de métricas */}
           <div className="planoResultadoGrid">
 
             <div className="planoResultadoItem">
@@ -663,6 +688,7 @@ function MeuPlano({ onClose }) {
 
           </div>
 
+          {/* Taxa de manutenção — explicação */}
           <div className="planoManutencaoBox">
             <p className="planoManutencaoTexto">
               Consumindo aproximadamente <strong>{resultado.manutencao} kcal/dia</strong> você
@@ -673,6 +699,7 @@ function MeuPlano({ onClose }) {
             </p>
           </div>
 
+          {/* Metas */}
           <div className="planoMetas">
             <div className="planoMetaBox kcal">
               <span className="planoMetaValor">{resultado.metaKcal}</span>
@@ -686,6 +713,7 @@ function MeuPlano({ onClose }) {
             </div>
           </div>
 
+          {/* Parecer corporal */}
           <div className={`planoParecer parecer-${resultado.parecerCor}`}>
             <div className="planoParecerTopo">
               <span className="planoParecerLabel">{resultado.parecerLabel}</span>

@@ -10,8 +10,10 @@ import Agua from "../agua/Agua";
 import GraficoKcal from "../../components/GraficoKcal/GraficoKcal";
 import { supabase } from "../../services/supabaseClient";
 import SmartBanner from "../SmartBanner/SmartBanner";
+//import SmartPa from "../SmartBanner/SmartPa";
 import Distintivos from "../Distintivos/Distintivos";
 import Exercicio from "../Exercicio/Exercicio";
+import Treinos from "../treino/Treinos";
 import { useConexao } from "../../hooks/useConexao";
 import loadingPng from "../../assets/loading.png";
 import InstallButton from "../../components/InstallButton/InstallButton";
@@ -44,6 +46,8 @@ const CARDS = [
   { id: "metas"      },
   { id: "agua"       },
   { id: "exercicio"  },
+  { id: "treinos"    },
+  {/* id: "smartpa"    */},
 ];
 
 const getColor = (value, max) => {
@@ -442,6 +446,8 @@ function Home() {
       metas: "/home/metas",
       agua: "/home/agua",
       exercicio: "/home/exercicio",
+      treinos: "/home/treinos",
+      //smartpa: "/home/P",
     };
 
     if (rotas[cardId]) navigate(rotas[cardId]);
@@ -584,6 +590,8 @@ function Home() {
                   {abaAtiva === "metas"      && <Metas        onClose={fecharAba} />}
                   {abaAtiva === "agua"       && <Agua         onClose={fecharAba} />}
                   {abaAtiva === "exercicio"  && <Exercicio    onClose={fecharAba} />}
+                  {abaAtiva === "treinos"    && <Treinos      onClose={fecharAba} />}
+                 {/*abaAtiva === "smartpa"    && <SmartPa      onClose={fecharAba} />*/}
                 </div>
               )}
             </div>

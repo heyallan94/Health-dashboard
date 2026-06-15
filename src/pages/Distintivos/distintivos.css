@@ -15,7 +15,7 @@
   width: 44px;
   height: 44px;
   cursor: pointer;
-  color: #facc15;
+  color: #4ade80;
 }
 
 .distintivoAnel {
@@ -44,17 +44,17 @@
 
 /* ── Conquistado ─────────────────────────────────────────────────────────── */
 .distintivo.conquistado .distintivoAnel {
-  filter: drop-shadow(0 0 6px rgba(250, 204, 21, 0.5));
+  filter: drop-shadow(0 0 6px rgba(74, 222, 128, 0.5));
 }
 
 /* ── Bloqueado ───────────────────────────────────────────────────────────── */
 .distintivo.bloqueado .distintivoAnel {
-  opacity: 0.42;
-  filter: grayscale(1);
+  opacity: 0.7;
+  filter: grayscale(0.6);
 }
 .distintivo.bloqueado:hover .distintivoAnel {
-  opacity: 0.65;
-  filter: grayscale(0.5);
+  opacity: 0.9;
+  filter: grayscale(0.2);
 }
 
 /* ── Arco ────────────────────────────────────────────────────────────────── */

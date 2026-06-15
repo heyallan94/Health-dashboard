@@ -741,6 +741,14 @@ body {
       background-position: center;
 }
 
+.card.treinos {
+      background: linear-gradient(135deg, #1a1040 0%, #0d1526 50%, #101a30 100%);
+}
+
+.card.smartpa {
+      background: linear-gradient(135deg, #0f0c29 0%, #1a1040 40%, #0d1526 100%);
+}
+
 .loadingConexaoOverlay {
   position: fixed;
   inset: 0;

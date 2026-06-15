@@ -3,8 +3,17 @@ import { createPortal } from "react-dom";
 import { supabase } from "../../services/supabaseClient";
 import "./distintivos.css";
 
+const normalizarData = (valor) => {
+  if (!valor) return "";
+  const d = new Date(valor);
+  if (isNaN(d.getTime())) return String(valor);
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  return `${dd}/${mm}/${d.getFullYear()}`;
+};
+
 const sequenciaAtual = (historico) => {
-  const datas = new Set(historico.map((h) => h.data));
+  const datas = new Set(historico.map((h) => normalizarData(h.data)));
   let seq = 0;
   const hoje = new Date();
 
@@ -47,10 +56,11 @@ const DISTINTIVOS = [
   {
     id: "proteina", emoji: "🥩", label: "Rei da Proteína",
     descricao: "Meta proteica batida 5 dias",
-    dica: "Bata a meta de proteína em 5 dias diferentes",
+    dica: "Bata a meta de proteína nos últimos 5 dias",
     check: (hist) => {
       const meta = Number(localStorage.getItem("metaProteina")) || 150;
-      const dias = hist.filter((h) => Number(h.protd) >= meta).length;
+      const ultimos5 = hist.slice(0, 5);
+      const dias = ultimos5.filter((h) => Number(h.protd) >= meta).length;
       return { conquistado: dias >= 5, progresso: Math.min(dias / 5, 1), detalhe: dias >= 5 ? "5 dias de proteína!" : `${dias}/5 dias` };
     },
   },
@@ -136,13 +146,39 @@ export default function Distintivos({ user }) {
   useEffect(() => {
     if (!user?.id) return;
     const carregar = async () => {
-      const { data, error } = await supabase
-        .from("historico_dias")
-        .select("data, kcald, protd, carbd, aguad")
-        .eq("user_id", user.id)
-        .order("data", { ascending: false });
-      if (error) { console.error(error); return; }
-      const hist = data || [];
+      const [refRes, aguaRes] = await Promise.all([
+        supabase
+          .from("refeicoes")
+          .select("datad, kcal_total, prot_total, carb_total")
+          .eq("user_id", user.id),
+        supabase
+          .from("agua_diaria")
+          .select("datad, consumo")
+          .eq("user_id", user.id),
+      ]);
+
+      if (refRes.error) { console.error(refRes.error); return; }
+
+      const mapa = {};
+      (refRes.data || []).forEach((r) => {
+        const d = r.datad;
+        if (!mapa[d]) {
+          mapa[d] = { data: d, kcald: 0, protd: 0, carbd: 0, aguad: 0 };
+        }
+        mapa[d].kcald += Number(r.kcal_total || 0);
+        mapa[d].protd += Number(r.prot_total || 0);
+        mapa[d].carbd += Number(r.carb_total || 0);
+      });
+
+      if (!aguaRes.error && aguaRes.data) {
+        aguaRes.data.forEach((a) => {
+          if (mapa[a.datad]) {
+            mapa[a.datad].aguad = Number(a.consumo || 0);
+          }
+        });
+      }
+
+      const hist = Object.values(mapa);
       setResultados(DISTINTIVOS.map((d) => ({ ...d, resultado: d.check(hist) })));
     };
     carregar();

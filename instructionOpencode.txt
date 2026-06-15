@@ -1,0 +1,99 @@
+OBJETIVO
+
+Criar um chat que:
+
+Lê mensagens iniciais da tabela respostas (coluna etapa1)
+Se detectar o nome “allan” (ou variações), muda para etapa2
+Salva todas as mensagens em múltiplos locais do Supabase
+Permite limpar apenas o histórico atual, sem apagar logs totais
+🔹 FONTES DE DADOS (SUPABASE)
+📌 Tabela: respostas
+etapa1 → mensagens iniciais do chat
+etapa2 → resposta especial quando detectar “allan”
+📌 Tabela: chat
+
+Campos:
+
+id (userId)
+historico → mensagens atuais do chat (resetável)
+historicototal → histórico permanente (NUNCA apagar)
+etapa → controle simples de fluxo
+📌 Tabela: chat_historico
+
+Campos:
+
+id
+chat_historico_total (JSON array)
+nunca pode ser apagado
+só pode ser atualizado via UPSERT
+🔹 REGRAS PRINCIPAIS
+1. Inicialização do chat
+
+Ao abrir o sistema:
+
+Buscar chat.historico
+Se existir → renderizar normalmente
+Se NÃO existir → usar respostas.etapa1 como mensagens iniciais
+2. Envio de mensagem (OBRIGATÓRIO SALVAR EM 3 LUGARES)
+
+Toda mensagem enviada pelo usuário e toda resposta da IA deve ser salva em:
+
+chat.historico (estado atual)
+chat.historicototal (histórico permanente do chat)
+chat_historico.chat_historico_total (UPSERT, nunca apagar)
+3. REGRA ESPECIAL “ALLAN”
+
+Se a mensagem do usuário conter qualquer variação de:
+
+"allan"
+"AlLaN"
+"meu nome é allan"
+ou qualquer texto contendo "allan"
+
+Então:
+
+responder com respostas.etapa2
+caso contrário usar respostas.etapa1
+4. LIMPAR CONVERSA
+
+Ao clicar em “limpar conversa”:
+
+apagar SOMENTE chat.historico
+resetar etapa para 0
+NÃO apagar:
+historicototal
+chat_historico_total
+5. CHAT_HISTORICO (LOG PERMANENTE)
+Sempre fazer UPSERT em chat_historico
+Nunca deletar registros
+Sempre concatenar novas mensagens
+Deve conter histórico completo de user + IA
+6. SIMPLICIDADE OBRIGATÓRIA
+
+Este sistema deve ser:
+
+NÃO escalável
+NÃO modular demais
+NÃO multiusuário complexo
+NÃO com arquitetura avançada
+
+Apenas:
+
+👉 input → resposta → salvar → repetir
+
+7. FLUXO FINAL
+Usuário envia mensagem
+Salvar em todos os históricos
+Verificar se contém “allan”
+Escolher resposta (etapa1 ou etapa2)
+Mostrar resposta
+Salvar resposta em todos os logs
+🎯 RESULTADO ESPERADO
+
+Um chat funcional simples, com:
+
+persistência básica
+regra de nome “allan”
+logs duplicados (chat + histórico total)
+botão de limpar conversa seguro
+funcionamento linear sem complexidade

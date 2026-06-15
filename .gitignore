@@ -24,3 +24,7 @@ yarn-error.log*
 
 src/sandbox/
 .env
+
+SmartPa.jsx
+SmartPa copy.jsx
+SmartPa.css

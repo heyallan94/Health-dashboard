@@ -2,6 +2,7 @@ import { supabase } from "../../services/supabaseClient";
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import "./Calendario.css";
 import { useNavigate } from "react-router-dom";
+import loadingPng from "../../assets/loading.png";
 
 const isDesktop = () => window.innerWidth >= 768;
 
@@ -88,6 +89,8 @@ const agruparGastosPorDia = (registros) => {
 
 const CACHE_KEY = "calendarioDias_v2";
 const CACHE_MANUTENCAO = "manutencaoKcal";
+const CACHE_RESULTADO = "calResultado_v1";
+const DIAS_POR_PAGINA = 9;
 
 const lerCache = () => {
   try {
@@ -118,6 +121,23 @@ const lerManutencaoCache = () => {
   }
 };
 
+const lerResultadoCache = () => {
+  try {
+    const raw = localStorage.getItem(CACHE_RESULTADO);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+};
+
+const salvarResultadoCache = (dados) => {
+  try {
+    localStorage.setItem(CACHE_RESULTADO, JSON.stringify(dados));
+  } catch {
+    console.warn("localStorage cheio");
+  }
+};
+
 const EMOJI_ATIVIDADE = {
   corrida: "🏃",
   caminhada: "🚶",
@@ -144,6 +164,13 @@ function Calendario({ onClose }) {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [manutencaoKcal, setManutencaoKcal] = useState(lerManutencaoCache);
 
+  const resultadoInicial = lerResultadoCache();
+  const [calculando, setCalculando] = useState(() => !resultadoInicial);
+  const [exibicaoResultado, setExibicaoResultado] = useState(
+    resultadoInicial || { saldoKcal: 0, massaKg: 0, totalQueimado: 0, manutencaoKcal: 0 }
+  );
+  const [paginaDesktop, setPaginaDesktop] = useState(0);
+
   const hoje = dataHoje();
 
   const scrollCarrossel = (dir) => {
@@ -152,6 +179,17 @@ function Calendario({ onClose }) {
       left: dir * 320,
       behavior: "smooth",
     });
+  };
+
+  const mudarPagina = (dir) => {
+    setPaginaDesktop((prev) => {
+      const total = Math.ceil(dias.length / DIAS_POR_PAGINA);
+      const nova = prev + dir;
+      if (nova < 0) return total - 1;
+      if (nova >= total) return 0;
+      return nova;
+    });
+    setDiaAberto(null);
   };
 
   useEffect(() => {
@@ -358,9 +396,31 @@ function Calendario({ onClose }) {
 
   const metaTotal = manutencaoKcal * diasConsolidados.length;
   const saldoKcal = metaTotal + totalQueimado - totalConsumido;
-  console.log(manutencaoKcal, totalConsumido, totalQueimado, saldoKcal)
   const massaKg = saldoKcal / 7700;
   const classeResultado = saldoKcal >= 0 ? "positivo" : "negativo";
+
+  const totalPaginasDesktop = Math.ceil(dias.length / DIAS_POR_PAGINA) || 1;
+  const inicioPagina = paginaDesktop * DIAS_POR_PAGINA;
+  const diasPaginaDesktop = dias.slice(inicioPagina, inicioPagina + DIAS_POR_PAGINA);
+  const hojeNaPagina = diasPaginaDesktop.some((d) => d.data === hoje);
+  const ultimaPagina = paginaDesktop >= totalPaginasDesktop - 1;
+
+  useEffect(() => {
+    if (!loading) {
+      if (diasConsolidados.length > 0 && manutencaoKcal > 0) {
+        const resultado = {
+          saldoKcal,
+          massaKg,
+          totalQueimado,
+          manutencaoKcal,
+          totalConsumido,
+        };
+        salvarResultadoCache(resultado);
+        setExibicaoResultado(resultado);
+      }
+      if (calculando) setCalculando(false);
+    }
+  }, [loading, saldoKcal, massaKg, totalQueimado, manutencaoKcal, diasConsolidados.length, totalConsumido, calculando]);
 
   const disclaimerKcal = () =>
     window.confirm("*O resultado de massa é aproximado* (7700 kcal ≈ 1kg de gordura)");
@@ -442,22 +502,26 @@ function Calendario({ onClose }) {
         </button>
       </div>
 
-      {loading && (
-        <p className="secaoLabel" style={{ textAlign: "center" }}>
-          Carregando...
-        </p>
-      )}
-
-      {diasConsolidados.length > 0 && manutencaoKcal > 0 && (
+      {calculando ? (
+        <div className="calendarioLoadingOverlay">
+          <img
+            src={loadingPng}
+            alt="Carregando"
+            className="calendarioLoadingImg"
+          />
+        </div>
+      ) : (
+        <>
+          {exibicaoResultado.manutencaoKcal > 0 && (
         <div className="cardResultado" onClick={disclaimerKcal}>
           <p className="kcalResultado">
-            {saldoKcal >= 0 ? "−" : "+"}
-            {Math.abs(saldoKcal).toFixed(0)} kcal
+            {exibicaoResultado.saldoKcal >= 0 ? "−" : "+"}
+            {Math.abs(exibicaoResultado.saldoKcal).toFixed(0)} kcal
           </p>
 
-          {totalQueimado > 0 && (
+          {exibicaoResultado.totalQueimado > 0 && (
             <p className="caloriasExercicio">
-              🔥 Exercícios ajudaram em +{totalQueimado} kcal. 
+              🔥 Exercícios ajudaram em +{exibicaoResultado.totalQueimado} kcal. 
             </p>
           )}
 
@@ -467,20 +531,20 @@ function Calendario({ onClose }) {
             de calorias queimadas aumenta.
           </p>
 
-          <p className={`massaResultado ${classeResultado}`}>
+          <p className={`massaResultado ${exibicaoResultado.saldoKcal >= 0 ? "positivo" : "negativo"}`}>
             RESULTADO : {" "}
-            {massaKg >= 0 ? "−" : "+"}
-            {Math.abs(massaKg).toFixed(2)} kg
+            {exibicaoResultado.massaKg >= 0 ? "−" : "+"}
+            {Math.abs(exibicaoResultado.massaKg).toFixed(2)} kg
           </p>
 
           <div className="manutencaoInfo">
             <p className="manutencaoValor">
-              Manutenção: {manutencaoKcal.toFixed(0)} kcal/dia
+              Manutenção: {exibicaoResultado.manutencaoKcal.toFixed(0)} kcal/dia
             </p>
 
             <p className="manutencaoTexto">
               Seu corpo gasta aproximadamente{" "}
-              <strong>{manutencaoKcal.toFixed(0)} kcal</strong> em um dia ativo.
+              <strong>{exibicaoResultado.manutencaoKcal.toFixed(0)} kcal</strong> em um dia ativo.
             </p>
 
             <p className="manutencaoAviso">
@@ -490,7 +554,7 @@ function Calendario({ onClose }) {
         </div>
       )}
 
-      {diasConsolidados.length > 0 && manutencaoKcal <= 0 && (
+      {exibicaoResultado.manutencaoKcal <= 0 && diasConsolidados.length > 0 && (
         <p className="secaoLabel" style={{ textAlign: "center" }}>
           Manutenção kcal não encontrada no plano.
         </p>
@@ -513,110 +577,160 @@ function Calendario({ onClose }) {
                 : ""
           }`}
         >
-        {!isMobile && dias.length > 1 && (
-          <button
-            className="calArrow calArrow--left"
-            onClick={() => scrollCarrossel(-1)}
-            type="button"
-          >
-            ‹
-          </button>
-        )}
+        {isMobile ? (
+          <div className="calendarioCarrossel" ref={carrosselRef}>
+            {!loading && dias.length === 0 && (
+              <p className="calendarioContainerSemFlex">
+                Nenhuma refeição registrada ainda.
+              </p>
+            )}
 
-        <div className="calendarioCarrossel" ref={carrosselRef}>
-          {!loading && dias.length === 0 && (
-            <p className="calendarioContainerSemFlex">
-              Nenhuma refeição registrada ainda.
-            </p>
-          )}
+            {dias.map((dia) => {
+              const gasto = gastosPorDia[dia.data];
+              const kcalQueimada = gasto?.totalKcal || 0;
+              const numAtividades = gasto?.atividades.length || 0;
+              const ehHoje = dia.data === hoje;
 
-          {dias.map((dia) => {
-            const gasto = gastosPorDia[dia.data];
-            const kcalQueimada = gasto?.totalKcal || 0;
-            const numAtividades = gasto?.atividades.length || 0;
-            const ehHoje = dia.data === hoje;
+              return (
+                <div
+                  key={dia.data}
+                  className={`cardDia ${diaAberto === dia.data ? "aberto" : ""} ${
+                    ehHoje ? "cardDia--hoje" : ""
+                  }`}
+                  onClick={() => setDiaAberto(dia.data)}
+                >
+                  <div className="cardHeader">
+                    <span className="cardData">
+                      {dia.data}
+                      {ehHoje && <span className="cardHojeBadge">hoje</span>}
+                    </span>
 
-            return (
-              <div
-                key={dia.data}
-                className={`cardDia ${diaAberto === dia.data ? "aberto" : ""} ${
-                  ehHoje ? "cardDia--hoje" : ""
-                }`}
-                onClick={() => {
-                  if (isMobile) setDiaAberto(dia.data);
-                  else toggleDia(dia.data);
-                }}
-              >
-                <div className="cardHeader">
-                  <span className="cardData">
-                    {dia.data}
-                    {ehHoje && <span className="cardHojeBadge">hoje</span>}
-                  </span>
+                    <button
+                      className="btnExcluirDia"
+                      onClick={(e) => excluirDia(e, dia.data)}
+                    >
+                      ×
+                    </button>
+                  </div>
 
+                  <hr className="linhaSep" />
+
+                  <div className="fireBadge">
+                    <span className="fireBadgeIcon">🔥</span>
+                    <span className="fireBadgeKcal">{kcalQueimada}</span>
+                    <span className="fireBadgeUnit">kcal</span>
+                  </div>
+
+                  <div className="cardMacros">
+                    <div className="macroBadge kcal">
+                      <span>{dia.totalKcal}</span>
+                      <small>kcal</small>
+                    </div>
+
+                    <div className="macroBadge prot">
+                      <span>{dia.totalProteina}g</span>
+                      <small>prot</small>
+                    </div>
+
+                    <div className="macroBadge carbo">
+                      <span>{dia.totalCarbo}g</span>
+                      <small>carbo</small>
+                    </div>
+                  </div>
+
+                  <p className="cardQtdRefeicoes">
+                    {dia.refeicoes.length}{" "}
+                    {dia.refeicoes.length === 1 ? "refeição" : "refeições"}
+                    {numAtividades > 0 &&
+                      ` · ${numAtividades} ${
+                        numAtividades === 1 ? "atividade" : "atividades"
+                      }`}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <>
+            {!loading && dias.length === 0 && (
+              <p className="calendarioContainerSemFlex">
+                Nenhuma refeição registrada ainda.
+              </p>
+            )}
+            {dias.length > 0 && (
+              <div className="calendarioGridShell">
+                {totalPaginasDesktop > 1 && (
                   <button
-                    className="btnExcluirDia"
-                    onClick={(e) => excluirDia(e, dia.data)}
+                    className={`calArrow calArrow--left${hojeNaPagina ? " calArrow--disabled" : ""}`}
+                    onClick={() => !hojeNaPagina && mudarPagina(-1)}
+                    type="button"
+                    disabled={hojeNaPagina}
                   >
-                    ×
+                    ‹
                   </button>
+                )}
+
+                <div className="calendarioGrid">
+                  {diasPaginaDesktop.map((dia) => {
+                    const gasto = gastosPorDia[dia.data];
+                    const kcalQueimada = gasto?.totalKcal || 0;
+                    const ehHoje = dia.data === hoje;
+
+                    return (
+                      <div
+                        key={dia.data}
+                        className={`cardDiaGrid ${diaAberto === dia.data ? "aberto" : ""} ${
+                          ehHoje ? "cardDiaGrid--hoje" : ""
+                        }`}
+                        onClick={() => setDiaAberto((prev) => (prev === dia.data ? null : dia.data))}
+                      >
+                        <div className="cardGridHeader">
+                          <span className="cardGridData">
+                            {dia.data}
+                            {ehHoje && <span className="cardHojeBadge">hoje</span>}
+                          </span>
+                          <button
+                            className="btnExcluirDia"
+                            onClick={(e) => excluirDia(e, dia.data)}
+                          >
+                            ×
+                          </button>
+                        </div>
+                        <span className="cardGridRefeicoes">
+                          {dia.refeicoes.length} {dia.refeicoes.length === 1 ? "refeição" : "refeições"}
+                        </span>
+                        <p className="cardGridKcal">{dia.totalKcal} kcal</p>
+                        <p className="cardGridProt">{dia.totalProteina}g prot</p>
+                        <span className="cardGridFire">
+                          {kcalQueimada > 0 ? `🔥 ${kcalQueimada} kcal` : ""}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
 
-                <hr className="linhaSep" />
-
-                <div className="fireBadge">
-                  <span className="fireBadgeIcon">🔥</span>
-                  <span className="fireBadgeKcal">{kcalQueimada}</span>
-                  <span className="fireBadgeUnit">kcal</span>
-                </div>
-
-                <div className="cardMacros">
-                  <div className="macroBadge kcal">
-                    <span>{dia.totalKcal}</span>
-                    <small>kcal</small>
-                  </div>
-
-                  <div className="macroBadge prot">
-                    <span>{dia.totalProteina}g</span>
-                    <small>prot</small>
-                  </div>
-
-                  <div className="macroBadge carbo">
-                    <span>{dia.totalCarbo}g</span>
-                    <small>carbo</small>
-                  </div>
-                </div>
-
-                <p className="cardQtdRefeicoes">
-                  {dia.refeicoes.length}{" "}
-                  {dia.refeicoes.length === 1 ? "refeição" : "refeições"}
-                  {numAtividades > 0 &&
-                    ` · ${numAtividades} ${
-                      numAtividades === 1 ? "atividade" : "atividades"
-                    }`}
-                </p>
-
-                {!isMobile && diaAberto === dia.data && (
-                  <div className="listaAlimentos">
-                    {renderDetalhesDia(dia)}
-                  </div>
+                {totalPaginasDesktop > 1 && (
+                  <button
+                    className={`calArrow calArrow--right${ultimaPagina ? " calArrow--disabled" : ""}`}
+                    onClick={() => !ultimaPagina && mudarPagina(1)}
+                    type="button"
+                    disabled={ultimaPagina}
+                  >
+                    ›
+                  </button>
                 )}
               </div>
-            );
-          })}
-        </div>
-
-        {!isMobile && dias.length > 1 && (
-          <button
-            className="calArrow calArrow--right"
-            onClick={() => scrollCarrossel(1)}
-            type="button"
-          >
-            ›
-          </button>
+            )}
+            {totalPaginasDesktop > 1 && (
+              <p className="paginaIndicador">
+                {paginaDesktop + 1} / {totalPaginasDesktop}
+              </p>
+            )}
+          </>
         )}
       </div>
 
-      {isMobile && diaAberto && (
+      {diaAberto && (
         <div className="modalOverlay" onClick={() => setDiaAberto(null)}>
           <div className="modalContent" onClick={(e) => e.stopPropagation()}>
             <button className="fecharModal" onClick={() => setDiaAberto(null)}>
@@ -648,6 +762,8 @@ function Calendario({ onClose }) {
               ))}
           </div>
         </div>
+      )}
+        </>
       )}
     </div>
   );

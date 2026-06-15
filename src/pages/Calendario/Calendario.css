@@ -636,71 +636,38 @@
   animation: calFadeUp 0.25s ease;
 }
 
-/* ── Desktop real: carrossel com arrows ──────────────────────────────────── */
+/* ── Desktop: grid 3x3 com paginação ───────────────────────────────────── */
 @media (min-width: 1024px) {
   .paginaCalendario {
     padding: 28px 24px 60px;
   }
 
   .calendarioCarrosselShell {
-    display: grid;
-    grid-template-columns: 42px minmax(0, 1fr) 42px;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .calendarioCarrossel {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 14px;
-    overflow-x: auto;
-    overflow-y: visible;
-    scroll-snap-type: x mandatory;
-    padding: 2px 2px 10px;
-    scrollbar-width: none;
-  }
-
-  .calendarioCarrossel::-webkit-scrollbar {
-    display: none;
-  }
-
-   .calendarioCarrosselShell--empty {
     display: block;
-  }
-
-  .calendarioCarrosselShell--empty .calendarioCarrossel {
-    flex-direction: column;
-    overflow: visible;
-    padding: 0;
-    scroll-snap-type: none;
   }
 
   .calendarioCarrosselShell--empty .calendarioContainerSemFlex {
     width: 100%;
     box-sizing: border-box;
+    text-align: center;
   }
 
-  .cardDia {
-    width: 270px;
-    min-width: 270px;
-    flex: 0 0 270px;
-    scroll-snap-align: start;
-    padding: 18px;
-    border-radius: 20px;
+  /* ── Grid shell ────────────────────────────────────────────── */
+  .calendarioGridShell {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 10px;
   }
 
-  .cardDia:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(59, 130, 246, 0.1);
+  .calendarioGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    align-content: start;
   }
 
-  .cardDia.aberto {
-    width: 350px;
-    min-width: 350px;
-    flex-basis: 350px;
-  }
-
+  /* ── Arrow buttons ─────────────────────────────────────────── */
   .calArrow {
     width: 42px;
     height: 42px;
@@ -751,54 +718,197 @@
     justify-self: end;
   }
 
-  .macroBadge span {
-    font-size: 14px;
+  .calArrow--disabled {
+    opacity: 0.25;
+    pointer-events: none;
+    cursor: default;
   }
 
-  .macroBadge small {
-    font-size: 9px;
+  .calArrow--disabled:hover {
+    color: #64748b;
+    border-color: #1a2640;
+    background: linear-gradient(180deg, #111e35 0%, #0d1526 100%);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    transform: none;
   }
 
-  .itemAlimento {
-    gap: 10px;
-    font-size: 12px;
-  }
-
-  .itemNome small {
-    font-size: 10px;
-  }
-
-  .itemKcal {
-    min-width: 46px;
-  }
-
-  .itemProt {
-    min-width: 36px;
-  }
-
-    .calendarioCarrosselShell--single {
-    display: block;
-  }
-
-  .calendarioCarrosselShell--single .calendarioCarrossel {
+  /* ── Grid card ─────────────────────────────────────────────── */
+  .cardDiaGrid {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    padding: 14px 12px;
+    border-radius: 16px;
+    background: #0d1526;
+    border: 1px solid #1a2640;
+    transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+    display: flex;
     flex-direction: column;
-    overflow: visible;
-    padding: 0;
+    gap: 5px;
+    text-align: center;
+    min-height: 150px;
+    height: 150px;
   }
 
-  .calendarioCarrosselShell--single .cardDia {
-    width: 50%;
-    min-width: 0;
-    flex: none;
+  .cardDiaGrid::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(to bottom, #3b82f6, transparent);
+    border-radius: 16px 0 0 16px;
   }
 
-  .calendarioCarrosselShell--single .cardDia.aberto {
-    width: 50%;
-    min-width: 0;
-    flex-basis: auto;
+  .cardDiaGrid:hover {
+    border-color: #3b82f6;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(59, 130, 246, 0.12);
   }
-  .calendarioCarrosselShell--single .calendarioCarrossel {
+
+  .cardDiaGrid:active {
+    transform: scale(0.97);
+  }
+
+  .cardDiaGrid.aberto {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  }
+
+  .cardDiaGrid--hoje {
+    border-color: rgba(74, 222, 128, 0.25);
+    background: linear-gradient(135deg, #0d1526 0%, #0b1a12 100%);
+  }
+
+  .cardGridHeader {
+    display: flex;
     align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  .cardGridData {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+    min-width: 0;
+    color: #e2e8f0;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+  }
+
+  .cardGridKcal {
+    color: #facc15;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .cardGridProt {
+    color: #4ade80;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .cardGridFire {
+    color: #f59e0b;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 16px;
+  }
+
+  .cardGridRefeicoes {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 16px;
+  }
+
+  .cardDiaGrid .listaAlimentos {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #1a2640;
+    animation: calFadeDown 0.25s ease;
+  }
+
+  .cardDiaGrid .btnExcluirDia {
+    width: 26px;
+    height: 26px;
+    font-size: 16px;
+  }
+
+  .cardHojeBadge {
+    font-size: 8px;
+    padding: 2px 6px;
+  }
+
+  /* ── Page indicator ────────────────────────────────────────── */
+  .paginaIndicador {
+    text-align: center;
+    margin-top: 14px;
+    color: #334155;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── Modal desktop ────────────────────────────────────────── */
+  .modalOverlay {
+    align-items: center;
+  }
+
+  .modalContent {
+    width: auto;
+    max-width: 60vw;
+    max-height: 80vh;
+    border-radius: 20px;
+    border: 1px solid #1a2640;
+    border-bottom: 1px solid #1a2640;
+    padding: 28px 24px 38px;
+    animation: calFadeUp 0.25s ease;
+  }
+}
+
+/* ── Loading overlay (cálculo do resultado) ─────────────────────────────── */
+.calendarioLoadingOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(3, 7, 18, 0.72);
+  backdrop-filter: blur(3px);
+}
+
+.calendarioLoadingImg {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  animation: calendarioLoadingSpin 0.9s linear infinite;
+}
+
+@keyframes calendarioLoadingSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 767px) {
+  .calendarioLoadingImg {
+    width: 58px;
+    height: 58px;
   }
 }
 
