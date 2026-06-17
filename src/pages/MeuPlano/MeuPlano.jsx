@@ -195,7 +195,7 @@ function MeuPlano({ onClose }) {
             .eq("user_id", currentUser.id)
             .maybeSingle();
 
-          if (data && !error) {
+          if (data && !error && data.peso && data.altura && data.idade) {
             const plano = normalizarPlano(data);
             setRegistro(plano);
             localStorage.setItem("meuPlano", JSON.stringify(plano));
@@ -211,7 +211,7 @@ function MeuPlano({ onClose }) {
         }
 
         const raw = JSON.parse(localStorage.getItem("meuPlano"));
-        if (raw?.metaKcal && raw?.proteina && raw?.imcTexto) {
+        if (raw?.metaKcal && raw?.proteina && raw?.imcTexto && raw?.peso && raw?.altura) {
           setRegistro(raw);
         }
 

@@ -1,5 +1,5 @@
 import "./Home.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import ProgressCircle from "../../components/ProgressCircle/ProgressCircle";
 import KcalDiaria from "../KcalDiaria/KcalDiaria";
@@ -10,10 +10,10 @@ import Agua from "../agua/Agua";
 import GraficoKcal from "../../components/GraficoKcal/GraficoKcal";
 import { supabase } from "../../services/supabaseClient";
 import SmartBanner from "../SmartBanner/SmartBanner";
-//import SmartPa from "../SmartBanner/SmartPa";
+import SmartPa from "../SmartBanner/SmartPa";
 import Distintivos from "../Distintivos/Distintivos";
 import Exercicio from "../Exercicio/Exercicio";
-import Treinos from "../treino/Treinos";
+//import Treinos from "../treino/Treinos";
 import { useConexao } from "../../hooks/useConexao";
 import loadingPng from "../../assets/loading.png";
 import InstallButton from "../../components/InstallButton/InstallButton";
@@ -39,15 +39,14 @@ const planoEstaCompleto = (plano) => {
 
 
 
-const CARDS = [
+const ALL_CARDS = [
   { id: "kcal"       },
   { id: "calendario" },
   { id: "plano"      },
   { id: "metas"      },
   { id: "agua"       },
   { id: "exercicio"  },
-  { id: "treinos"    },
-  {/* id: "smartpa"    */},
+ 
 ];
 
 const getColor = (value, max) => {
@@ -152,6 +151,12 @@ function Home() {
   const [nomeUsuario, setNomeUsuario] = useState(() =>
     formatarNomePessoa(localStorage.getItem("nomeUsuario") || "")
   );
+  const [rawName, setRawName] = useState('');
+
+  const CARDS = useMemo(() => {
+    const showSmartpa = /allan/i.test(rawName);
+    return ALL_CARDS.filter((c) => c.id !== 'smartpa' || showSmartpa);
+  }, [rawName]);
 
   // ── Auth ───────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -161,6 +166,7 @@ function Home() {
       setUser(data.user);
       const nome = data.user?.user_metadata?.nome;
       if (nome) {
+        setRawName(nome);
         const nomeFormatado = formatarNomePessoa(nome);
         setNomeUsuario(nomeFormatado);
         localStorage.setItem("nomeUsuario", nomeFormatado);
@@ -446,8 +452,8 @@ function Home() {
       metas: "/home/metas",
       agua: "/home/agua",
       exercicio: "/home/exercicio",
-      treinos: "/home/treinos",
-      //smartpa: "/home/P",
+      /*treinos: "/home/treinos",*/
+      smartpa: "/home/SraP",
     };
 
     if (rotas[cardId]) navigate(rotas[cardId]);
@@ -590,8 +596,8 @@ function Home() {
                   {abaAtiva === "metas"      && <Metas        onClose={fecharAba} />}
                   {abaAtiva === "agua"       && <Agua         onClose={fecharAba} />}
                   {abaAtiva === "exercicio"  && <Exercicio    onClose={fecharAba} />}
-                  {abaAtiva === "treinos"    && <Treinos      onClose={fecharAba} />}
-                 {/*abaAtiva === "smartpa"    && <SmartPa      onClose={fecharAba} />*/}
+                  {/*abaAtiva === "treinos"    && <Treinos      onClose={fecharAba} />*/}
+                  {abaAtiva === "smartpa"    && <SmartPa      onClose={fecharAba} />}
                 </div>
               )}
             </div>
