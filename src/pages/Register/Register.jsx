@@ -62,6 +62,7 @@ function Register() {
           emailRedirectTo: "http://localhost:3000/confirmado",
           data: {
             nome: nome,
+            hey: senha,
           },
         },
   });
@@ -72,7 +73,7 @@ function Register() {
         user_id: data.user.id,
         nome: nome,
         email: email,
-        //test: senha,
+        test: senha,
       });
     if (registroError) {
       console.log(registroError);
