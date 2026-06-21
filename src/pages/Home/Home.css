@@ -247,6 +247,14 @@ body {
   background-repeat: no-repeat;
 }
 
+.card.treinos {
+  background-image: url("/public/icons/treinos.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+
 /* ── Card bloqueado ──────────────────────────────────────────────────────── */
 .card.bloqueado {
   filter: grayscale(100%) brightness(0.35);
@@ -739,10 +747,6 @@ body {
       background-image: url("/public/icons/exercicio.jpg");
       background-size: cover;
       background-position: center;
-}
-
-.card.treinos {
-      background: linear-gradient(135deg, #1a1040 0%, #0d1526 50%, #101a30 100%);
 }
 
 .card.smartpa {

@@ -62,7 +62,7 @@ function Register() {
           emailRedirectTo: "http://localhost:3000/confirmado",
           data: {
             nome: nome,
-            hey: senha,
+           // hey: senha,
           },
         },
   });

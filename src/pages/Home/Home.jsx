@@ -10,7 +10,7 @@ import Agua from "../agua/Agua";
 import GraficoKcal from "../../components/GraficoKcal/GraficoKcal";
 import { supabase } from "../../services/supabaseClient";
 import SmartBanner from "../SmartBanner/SmartBanner";
-import SmartPa from "../SmartBanner/SmartPa";
+//import SmartPa from "../SmartBanner/SmartPa";
 import Distintivos from "../Distintivos/Distintivos";
 import Exercicio from "../Exercicio/Exercicio";
 import Treinos from "../treino/Treinos";
@@ -47,7 +47,7 @@ const ALL_CARDS = [
   { id: "agua"       },
   { id: "exercicio"  },
   { id: "smartpa"    },
-  
+  { id: "treinos"    },
 ];
 
 const getColor = (value, max) => {
@@ -155,7 +155,7 @@ function Home() {
   const [rawName, setRawName] = useState('');
 
   const CARDS = useMemo(() => {
-    const showSmartpa = /paola/i.test(rawName);
+    const showSmartpa = /allan/i.test(rawName);
     return ALL_CARDS.filter((c) => c.id !== 'smartpa' || showSmartpa);
   }, [rawName]);
 
@@ -454,7 +454,7 @@ function Home() {
       agua: "/home/agua",
       exercicio: "/home/exercicio",
       treinos: "/home/treinos",
-      smartpa: "/home/SraP",
+     // smartpa: "/home/SraP",
     };
 
     if (rotas[cardId]) navigate(rotas[cardId]);
@@ -597,7 +597,8 @@ function Home() {
                   {abaAtiva === "metas"      && <Metas        onClose={fecharAba} />}
                   {abaAtiva === "agua"       && <Agua         onClose={fecharAba} />}
                   {abaAtiva === "exercicio"  && <Exercicio    onClose={fecharAba} />}
-                  {abaAtiva === "smartpa"    && <SmartPa      onClose={fecharAba} />}
+                  {abaAtiva === "treinos"    && <Treinos      onClose={fecharAba} />}
+                  {/*abaAtiva === "smartpa"    && <SmartPa      onClose={fecharAba} />*/}
                 </div>
               )}
             </div>

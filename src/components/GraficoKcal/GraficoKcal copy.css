@@ -1,0 +1,298 @@
+.graficoWrapper {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  background: #0d1526;
+  border: 1px solid #1a2640;
+  border-radius: 20px;
+  padding: 20px 16px 14px;
+  animation: fadeSlideUp 0.4s ease;
+}
+
+.graficoTopo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 0 4px;
+}
+
+.graficoTitulo {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #475569;
+  margin: 0;
+}
+
+.graficoLegenda {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.graficoLegendaTexto {
+  font-size: 11px;
+  color: #334155;
+  margin-right: 8px;
+}
+
+.graficoLegendaPonto {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.graficoLegendaPonto.amarelo {
+  background: #3b82f6;
+}
+
+.graficoLegendaPonto.verde {
+  background: #22c55e;
+}
+
+.graficoLegendaPonto.tracejado {
+  width: 18px;
+  height: 2px;
+  border-radius: 0;
+  background: repeating-linear-gradient(
+    to right,
+    #facc15 0px,
+    #facc15 5px,
+    transparent 5px,
+    transparent 8px
+  );
+}
+
+.graficoTooltip {
+  background: #111e35;
+  border: 1px solid #1a2640;
+  border-radius: 12px;
+  padding: 10px 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  min-width: 140px;
+}
+
+.graficoTooltipData {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #334155;
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+
+.graficoTooltipKcal {
+  font-size: 18px;
+  font-weight: 700;
+  color: #facc15;
+  margin: 0 0 4px;
+  letter-spacing: -0.01em;
+}
+
+.graficoTooltipDiff {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.graficoVazio {
+  text-align: center;
+  color: #1e2d47;
+  font-size: 13px;
+  padding: 40px 20px;
+  margin: 0;
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .graficoWrapper {
+    padding: 16px 10px 10px;
+    border-radius: 16px;
+  }
+
+  .graficoTopo {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .graficoTooltipKcal {
+    font-size: 16px;
+  }
+}
+
+.graficoTooltipQueimadas {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0 0;
+  padding: 5px 9px;
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  border-radius: 999px;
+  background: rgba(254, 242, 242, 0.95);
+  color: #b91c1c;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.graficoTooltipOriginal {
+  margin: 5px 0 0;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.graficoPeriodo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 12px;
+}
+
+.graficoPeriodoLabel {
+  color: #94a3b8;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.graficoPeriodoOpcoes {
+  display: flex;
+  gap: 6px;
+}
+
+.graficoPeriodoBotao {
+  width: 34px;
+  height: 30px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 6px;
+  background: transparent;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+}
+
+.graficoPeriodoBotao:hover {
+  border-color: rgba(250, 204, 21, 0.55);
+}
+
+.graficoPeriodoBotao.ativo {
+  border-color: #f59e0b;
+  background: #facc15;
+  color: #111827;
+}
+
+.graficoPeriodoBotao.colorir {
+  width: auto;
+  padding: 0 10px;
+  font-size: 0.72rem;
+  margin-left: 4px;
+}
+
+.graficoPeriodoBotao.colorir.ativo {
+  border-color: #f59e0b;
+  background: #facc15;
+  color: #111827;
+}
+
+.graficoChartArea {
+  position: relative;
+}
+
+.graficoLoadingPeriodo {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  background: rgba(8, 14, 26, 0.52);
+  backdrop-filter: blur(2px);
+  border-radius: 10px;
+}
+
+.graficoLoadingPeriodo img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  animation: graficoLoadingPulse 0.75s ease-in-out infinite alternate;
+}
+
+@keyframes graficoLoadingPulse {
+  from {
+    opacity: 0.55;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.loadingConexaoImg {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  animation: girar 1.2s linear infinite;
+}
+
+@media (max-width: 767px) {
+  .loadingConexaoImg {
+    width: 58px;
+    height: 58px;
+  }
+}
+
+@keyframes girar {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.graficoResultadoTitulo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.graficoResultadoTitulo.kcal.superavit {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.38);
+}
+
+.graficoResultadoTitulo.kcal.deficit {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.24);
+}
+
+.graficoResultadoTitulo.proteina {
+  background: rgba(34, 197, 94, 0.2);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.38);
+}
+
+

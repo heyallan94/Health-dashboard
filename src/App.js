@@ -15,7 +15,7 @@ import Metas from "./pages/Metas/metas";
 import Agua from "./pages/agua/Agua";
 import Exercicio from "./pages/Exercicio/Exercicio";
 import Treinos from "./pages/treino/Treinos";
-import SmartPa from "./pages/SmartBanner/SmartPa";
+//import SmartPa from "./pages/SmartBanner/SmartPa";
 
 // Components
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -104,14 +104,14 @@ function App() {
           }
         />}
 
-        <Route
+        {/*<Route
           path="/home/SraP"
           element={
             <ProtectedRoute>
               <SmartPa />
             </ProtectedRoute>
           }
-        />
+        />*/}
 
       </Routes>
     </BrowserRouter>

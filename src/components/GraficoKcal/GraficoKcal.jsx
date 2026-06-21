@@ -75,7 +75,7 @@ const TooltipCustom = ({ active, payload, label, meta, tipoGrafico }) => {
       {!graficoEhProteina && (
         <p
           className="graficoTooltipDiff"
-          style={{ color: acimaDaMeta ? "#facc15" : "#4ade80" }}
+          style={{ color: acimaDaMeta ? "#7eaefc" : "#3c83f6" }}
         >
           {acimaDaMeta
             ? `Superávit ${diferenca} calorias`
@@ -240,7 +240,7 @@ function GraficoKcal({ user }) {
   const padding = Math.round((maxValor - minValor) * 0.2) || 200;
   const dominio = [
     Math.max(0, minValor - padding),
-    maxValor + padding,
+    mostrarZonas ? Math.max(maxValor + padding, metaGrafico * 1.25) : maxValor + padding,
   ];
 
   return (
@@ -311,35 +311,47 @@ function GraficoKcal({ user }) {
             />
             <ReferenceLine
               y={metaGrafico}
-              stroke="#facc15"
+              stroke="#506b95"
               strokeDasharray="6 3"
               strokeWidth={1.5}
               label={false}
             />
-            {!graficoEhProteina && metaGrafico > 0 && mostrarZonas && (
+            {metaGrafico > 0 && mostrarZonas && (
               <>
-                <ReferenceArea y1={dominio[0]} y2={metaGrafico * 0.75} fill="#ff0000" fillOpacity={0.40} stroke="none" />
-                <ReferenceArea y1={metaGrafico * 0.75} y2={metaGrafico * 0.85} fill="#fffb00" fillOpacity={0.70} stroke="none" />
-                <ReferenceArea y1={metaGrafico * 0.85} y2={metaGrafico * 0.92} fill="#48ff00" fillOpacity={0.79} stroke="none" />
-                <ReferenceArea y1={metaGrafico * 0.92} y2={metaGrafico} fill="#ffffff" fillOpacity={0.59} stroke="none" />
-                <ReferenceArea y1={metaGrafico} y2={metaGrafico * 1.20} fill="#ff0000" fillOpacity={0.35} stroke="none" />
-                <ReferenceArea y1={metaGrafico * 1.20} y2={metaGrafico * 3} fill="#ff5900" fillOpacity={0.80} stroke="none" />
+                {graficoEhProteina ? (
+                  <>
+                    <ReferenceArea y1={dominio[0]} y2={metaGrafico * 0.80} fill="#ffffff" fillOpacity={0.30} stroke="none" />
+                    <ReferenceArea y1={metaGrafico * 0.80} y2={metaGrafico * 0.90} fill="#fffb00" fillOpacity={0.70} stroke="none" />
+                    <ReferenceArea y1={metaGrafico * 0.90} y2={metaGrafico} fill="#48ff00" fillOpacity={0.79} stroke="none" />
+                    <ReferenceArea y1={metaGrafico} y2={metaGrafico * 1.10} fill="#bfff00" fillOpacity={0.70} stroke="none" />
+                    <ReferenceArea y1={metaGrafico * 1.10} y2={dominio[1]} fill="#ffffff" fillOpacity={0.30} stroke="none" />
+                  </>
+                ) : (
+                  <>
+                    <ReferenceArea y1={dominio[0]} y2={metaGrafico * 0.75} fill="#ffffff" fillOpacity={0.30} stroke="none" />
+                    <ReferenceArea y1={metaGrafico * 0.75} y2={metaGrafico * 0.85} fill="#fffb00" fillOpacity={0.70} stroke="none" />
+                    <ReferenceArea y1={metaGrafico * 0.85} y2={metaGrafico * 0.92} fill="#48ff00" fillOpacity={0.79} stroke="none" />
+                    <ReferenceArea y1={metaGrafico * 0.92} y2={metaGrafico} fill="#fffb00" fillOpacity={0.70} stroke="none" />
+                    <ReferenceArea y1={metaGrafico} y2={metaGrafico * 1.20} fill="#ffffff" fillOpacity={0.30} stroke="none" />
+                    <ReferenceArea y1={metaGrafico * 1.20} y2={dominio[1]} fill="#ffffff" fillOpacity={0.30} stroke="none" />
+                  </>
+                )}
               </>
             )}
             <Line
               type="monotone"
               dataKey={graficoEhProteina ? "proteina" : "kcal"}
-              stroke={graficoEhProteina ? "#22c55e" : "#3b82f6"}
+              stroke={graficoEhProteina ? "#7eaefc" : "#3b82f6"}
               strokeWidth={2}
               dot={{
                 r: 4,
-                fill: graficoEhProteina ? "#22c55e" : "#3b82f6",
+                fill: graficoEhProteina ? "#7eaefc" : "#3b82f6",
                 stroke: "#080e1a",
                 strokeWidth: 2,
               }}
               activeDot={{
                 r: 6,
-                fill: graficoEhProteina ? "#4ade80" : "#60a5fa",
+                fill: graficoEhProteina ? "#a9c9fd" : "#7eaefc",
                 stroke: "#080e1a",
                 strokeWidth: 2,
               }}
