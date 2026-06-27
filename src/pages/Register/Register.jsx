@@ -62,7 +62,6 @@ function Register() {
           emailRedirectTo: "http://localhost:3000/confirmado",
           data: {
             nome: nome,
-           // hey: senha,
           },
         },
   });
@@ -96,7 +95,6 @@ function Register() {
       navigate("/");
     }, 2500);
   };
-
 
   const senhaTemMaiuscula = /[A-Z]/.test(senha);
   const senhaTemMinuscula = /[a-z]/.test(senha);

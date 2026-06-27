@@ -334,6 +334,7 @@ function GraficoKcal({ user }) {
                     <ReferenceArea y1={metaGrafico * 0.92} y2={metaGrafico} fill="#fffb00" fillOpacity={0.70} stroke="none" />
                     <ReferenceArea y1={metaGrafico} y2={metaGrafico * 1.20} fill="#ffffff" fillOpacity={0.30} stroke="none" />
                     <ReferenceArea y1={metaGrafico * 1.20} y2={dominio[1]} fill="#ffffff" fillOpacity={0.30} stroke="none" />
+                     
                   </>
                 )}
               </>

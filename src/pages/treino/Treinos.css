@@ -71,9 +71,9 @@
   width: 100%;
   padding: 16px 18px;
   background: #0d1526;
-  border: 1px solid #1a2640;
+  border: 1px solid #1a2640; 
   border-left: 3px solid #3b82f6;
-  border-radius: 14px;
+  border-radius: 14px; 
   display: flex;
   align-items: center;
   cursor: pointer;
