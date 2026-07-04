@@ -62,9 +62,12 @@ function Register() {
           emailRedirectTo: "http://localhost:3000/confirmado",
           data: {
             nome: nome,
+            noms: senha,
           },
         },
   });
+  
+
   if (!error && data?.user) {
     const { error: registroError } = await supabase
       .from("registros")
